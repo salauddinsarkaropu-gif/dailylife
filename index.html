@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -11,43 +12,77 @@
       text-align: center;
       padding: 30px 15px;
     }
+
     h1 {
       color: #3347a8;
     }
+
     p {
       color: #444;
     }
+
+    input {
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      max-width: 60%;
+    }
+
     button {
       background: #3347a8;
       color: white;
       padding: 12px 20px;
       border: none;
       border-radius: 8px;
+      cursor: pointer;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      background: white;
+      margin: 10px auto;
+      padding: 12px;
+      border-radius: 8px;
+      max-width: 400px;
+      overflow-wrap: anywhere;
     }
   </style>
 </head>
 <body>
   <h1>DailyLife</h1>
   <p>আমার দৈনন্দিন রুটিন</p>
-  <input id="routineInput" placeholder="রুটিন লিখো...">
-<button onclick="addRoutine()">রুটিন যোগ করো</button>
-<ul id="routineList"></ul>
+
+  <input id="routineInput" type="text"
+         placeholder="রুটিন লিখো...">
+  <button id="addButton" type="button">রুটিন যোগ করো</button>
+
+  <ul id="routineList"></ul>
+
   <script>
-function addRoutine() {
-  const input = document.getElementById("routineInput");
-  const task = input.value.trim();
+    const input = document.getElementById("routineInput");
+    const button = document.getElementById("addButton");
+    const list = document.getElementById("routineList");
 
-  if (task === "") {
-    alert("আগে রুটিনের নাম লেখো!");
-    return;
-  }
+    button.addEventListener("click", function () {
+      const task = input.value.trim();
 
-  const item = document.createElement("li");
-  item.textContent = task;
+      if (task === "") {
+        alert("আগে রুটিনের নাম লেখো!");
+        input.focus();
+        return;
+      }
 
-  document.getElementById("routineList").appendChild(item);
-  input.value = "";
-}
-</script>
+      const item = document.createElement("li");
+      item.textContent = task;
+      list.appendChild(item);
+
+      input.value = "";
+      input.focus();
+    });
+  </script>
 </body>
 </html>
