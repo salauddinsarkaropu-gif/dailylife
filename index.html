@@ -29,6 +29,25 @@
 <body>
   <h1>DailyLife</h1>
   <p>আমার দৈনন্দিন রুটিন</p>
-  <button>রুটিন যোগ করো</button>
+  <input id="routineInput" placeholder="রুটিন লিখো...">
+<button onclick="addRoutine()">রুটিন যোগ করো</button>
+<ul id="routineList"></ul>
+  <script>
+function addRoutine() {
+  const input = document.getElementById("routineInput");
+  const task = input.value.trim();
+
+  if (task === "") {
+    alert("আগে রুটিনের নাম লেখো!");
+    return;
+  }
+
+  const item = document.createElement("li");
+  item.textContent = task;
+
+  document.getElementById("routineList").appendChild(item);
+  input.value = "";
+}
+</script>
 </body>
 </html>
