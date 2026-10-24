@@ -14,10 +14,8 @@
       --bg: #f4f7fb;
       --text: #172033;
       --muted: #64748b;
-      --white: #fff;
       --border: #dbe4f0;
       --green: #15803d;
-      --red: #dc2626;
     }
 
     * {
@@ -48,17 +46,27 @@
       margin: 5px 0 0;
     }
 
-    nav {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 8px;
-      padding: 12px;
-      background: white;
-      border-bottom: 1px solid var(--border);
+    main {
+      max-width: 850px;
+      margin: auto;
+      padding: 16px;
     }
 
-    button, input, select, textarea {
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 3px 12px #17203308;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 21px;
+    }
+
+    button, input, select {
       font: inherit;
     }
 
@@ -80,43 +88,13 @@
       cursor: not-allowed;
     }
 
-    .nav-btn {
-      background: #e8efff;
-      color: #1e40af;
-    }
-
-    .nav-btn.active {
-      background: var(--blue);
-      color: white;
-    }
-
-    main {
-      max-width: 850px;
-      margin: auto;
-      padding: 16px;
-    }
-
-    .card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px;
-      margin-bottom: 16px;
-      box-shadow: 0 3px 12px #17203308;
-    }
-
-    .card h2 {
-      margin-top: 0;
-      font-size: 21px;
-    }
-
     label {
       display: block;
       font-weight: 600;
       margin: 10px 0 5px;
     }
 
-    input, select, textarea {
+    input, select {
       width: 100%;
       padding: 11px;
       border: 1px solid #cbd5e1;
@@ -125,7 +103,7 @@
       color: var(--text);
     }
 
-    input:focus, select:focus, textarea:focus {
+    input:focus, select:focus {
       outline: 2px solid #93c5fd;
       border-color: var(--blue);
     }
@@ -218,119 +196,6 @@
       color: var(--dark-blue);
     }
 
-    /* AI Chat */
-    .chat-card {
-      padding: 0;
-      overflow: hidden;
-    }
-
-    .chat-header {
-      padding: 15px;
-      color: white;
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    }
-
-    .chat-header h2 {
-      margin: 0;
-    }
-
-    .chat-header p {
-      margin: 4px 0 0;
-      font-size: 13px;
-      opacity: .95;
-    }
-
-    .chat-tools {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      padding: 12px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .chat-tools button {
-      padding: 8px 10px;
-      font-size: 13px;
-    }
-
-    #chatMessages {
-      height: 380px;
-      overflow-y: auto;
-      padding: 14px;
-      background: #f8fafc;
-    }
-
-    .message {
-      display: flex;
-      margin: 10px 0;
-    }
-
-    .message.user {
-      justify-content: flex-end;
-    }
-
-    .bubble {
-      max-width: 88%;
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-      padding: 11px 13px;
-      border-radius: 14px;
-      font-size: 15px;
-    }
-
-    .message.bot .bubble {
-      background: white;
-      border: 1px solid var(--border);
-      border-bottom-left-radius: 4px;
-    }
-
-    .message.user .bubble {
-      background: var(--blue);
-      color: white;
-      border-bottom-right-radius: 4px;
-    }
-
-    .suggestions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      padding: 10px 12px;
-    }
-
-    .suggestions button {
-      background: #e8efff;
-      color: #1e40af;
-      font-size: 13px;
-      padding: 8px 10px;
-    }
-
-    .chat-input-area {
-      display: flex;
-      gap: 8px;
-      padding: 12px;
-      border-top: 1px solid var(--border);
-      background: white;
-    }
-
-    .chat-input-area input {
-      min-width: 0;
-      flex: 1;
-    }
-
-    .chat-input-area button {
-      flex-shrink: 0;
-    }
-
-    .notice {
-      background: #fff7ed;
-      color: #9a3412;
-      border: 1px solid #fed7aa;
-      border-radius: 10px;
-      padding: 10px 12px;
-      font-size: 13px;
-      margin: 12px;
-    }
-
     footer {
       text-align: center;
       padding: 20px;
@@ -351,18 +216,6 @@
         grid-template-columns: 1fr;
         gap: 0;
       }
-
-      #chatMessages {
-        height: 340px;
-      }
-
-      .chat-input-area {
-        gap: 6px;
-      }
-
-      .chat-input-area button {
-        padding: 10px;
-      }
     }
   </style>
 </head>
@@ -373,128 +226,99 @@
     <p>তোমার রুটিন, পড়াশোনা ও প্রতিদিনের অগ্রগতি</p>
   </header>
 
-  <nav>
-    <button class="nav-btn active" id="homeNav" onclick="showPage('home')">
-      🏠 Home
-    </button>
-    <button class="nav-btn" id="chatNav" onclick="showPage('chat')">
-      🤖 AI Chat
-    </button>
-  </nav>
-
   <main>
-    <div id="homePage">
-      <section class="card">
-        <h2>📅 My Daily Routine</h2>
-        <p class="small">প্রতিদিনের কাজের সময় ও নাম লিখে রুটিন তৈরি করো।</p>
+    <section class="card">
+      <h2>📅 My Daily Routine</h2>
+      <p class="small">প্রতিদিনের কাজের সময় ও নাম লিখে রুটিন তৈরি করো।</p>
 
-        <label for="routineName">কী কাজ করবে?</label>
-        <input id="routineName" placeholder="যেমন: অর্থনীতি পড়ব">
+      <label for="routineName">কী কাজ করবে?</label>
+      <input id="routineName" placeholder="যেমন: অর্থনীতি পড়ব">
 
-        <div class="form-row">
-          <div>
-            <label for="routineTime">সময়</label>
-            <input id="routineTime" type="time">
-          </div>
-          <div>
-            <label for="routineNote">অতিরিক্ত তথ্য (ঐচ্ছিক)</label>
-            <input id="routineNote" placeholder="যেমন: ১ম অধ্যায়">
-          </div>
+      <div class="form-row">
+        <div>
+          <label for="routineTime">সময়</label>
+          <input id="routineTime" type="time">
         </div>
 
-        <div class="button-row">
-          <button onclick="addRoutine()">➕ রুটিন যোগ করো</button>
+        <div>
+          <label for="routineNote">অতিরিক্ত তথ্য (ঐচ্ছিক)</label>
+          <input id="routineNote" placeholder="যেমন: ১ম অধ্যায়">
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button onclick="addRoutine()">➕ রুটিন যোগ করো</button>
+      </div>
+
+      <div id="routineList"></div>
+      <p id="routineEmpty" class="small">এখনো কোনো রুটিন যোগ করোনি।</p>
+    </section>
+
+    <section class="card">
+      <h2>📚 Study Timer</h2>
+
+      <label for="classGroup">তোমার বিভাগ</label>
+      <select id="classGroup" onchange="updateSubjects()">
+        <option value="Science">Science (বিজ্ঞান)</option>
+        <option value="Commerce">Commerce (ব্যবসায় শিক্ষা)</option>
+        <option value="Arts" selected>Arts (মানবিক)</option>
+      </select>
+
+      <label for="subject">কোন বিষয় পড়বে?</label>
+      <select id="subject"></select>
+
+      <div id="timer" class="timer">00:00:00</div>
+      <p id="timerStatus" class="center small">
+        পড়াশোনা শুরু করতে Start চাপো।
+      </p>
+
+      <div class="button-row">
+        <button id="startBtn" class="green-btn" onclick="startStudy()">
+          ▶ Start
+        </button>
+
+        <button id="pauseBtn" class="secondary-btn hidden" onclick="pauseStudy()">
+          ⏸ Pause
+        </button>
+
+        <button id="resumeBtn" class="hidden" onclick="resumeStudy()">
+          ▶ Resume
+        </button>
+
+        <button id="stopBtn" class="hidden" onclick="stopStudy()">
+          ⏹ Stop & Save
+        </button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>📊 আজকের পড়াশোনা</h2>
+
+      <div class="stats">
+        <div class="stat">
+          <strong id="todayMinutes">0</strong>
+          <span>মিনিট পড়েছ</span>
         </div>
 
-        <div id="routineList"></div>
-        <p id="routineEmpty" class="small">এখনো কোনো রুটিন যোগ করোনি।</p>
-      </section>
-
-      <section class="card">
-        <h2>📚 Study Timer</h2>
-
-        <label for="classGroup">তোমার বিভাগ</label>
-        <select id="classGroup" onchange="updateSubjects()">
-          <option value="Science">Science (বিজ্ঞান)</option>
-          <option value="Commerce">Commerce (ব্যবসায় শিক্ষা)</option>
-          <option value="Arts" selected>Arts (মানবিক)</option>
-        </select>
-
-        <label for="subject">কোন বিষয় পড়বে?</label>
-        <select id="subject">
-          <option>ইতিহাস</option>
-          <option>পৌরনীতি ও সুশাসন</option>
-          <option>অর্থনীতি</option>
-          <option>যুক্তিবিদ্যা</option>
-          <option>আইসিটি</option>
-        </select>
-
-        <div id="timer" class="timer">00:00:00</div>
-        <p id="timerStatus" class="center small">পড়াশোনা শুরু করতে Start চাপো।</p>
-
-        <div class="button-row">
-          <button id="startBtn" class="green-btn" onclick="startStudy()">▶ Start</button>
-          <button id="pauseBtn" class="secondary-btn hidden" onclick="pauseStudy()">⏸ Pause</button>
-          <button id="resumeBtn" class="hidden" onclick="resumeStudy()">▶ Resume</button>
-          <button id="stopBtn" class="hidden" onclick="stopStudy()">⏹ Stop & Save</button>
+        <div class="stat">
+          <strong id="todaySessions">0</strong>
+          <span>টি Study Session</span>
         </div>
-      </section>
+      </div>
 
-      <section class="card">
-        <h2>📊 আজকের পড়াশোনা</h2>
-        <div class="stats">
-          <div class="stat">
-            <strong id="todayMinutes">0</strong>
-            <span>মিনিট পড়েছ</span>
-          </div>
-          <div class="stat">
-            <strong id="todaySessions">0</strong>
-            <span>টি Study Session</span>
-          </div>
-        </div>
-        <h3>আজকের সেশন</h3>
-        <div id="sessionList"></div>
-        <p id="sessionEmpty" class="small">আজকের পড়াশোনা এখানে দেখা যাবে।</p>
-        <div class="button-row">
-          <button class="secondary-btn" onclick="clearSessions()">সেশনের ইতিহাস মুছো</button>
-        </div>
-      </section>
-    </div>
+      <h3>আজকের সেশন</h3>
+      <div id="sessionList"></div>
 
-    <div id="chatPage" class="hidden">
-      <section class="card chat-card">
-        <div class="chat-header">
-          <h2>🤖 DailyLife AI</h2>
-          <p>বাংলা • English • Roman Bangla</p>
-        </div>
+      <p id="sessionEmpty" class="small">
+        আজকের পড়াশোনা এখানে দেখা যাবে।
+      </p>
 
-        <div class="chat-tools">
-          <button class="secondary-btn" onclick="newChat()">🆕 New Chat</button>
-          <button class="secondary-btn" onclick="showPage('home')">🏠 Home</button>
-        </div>
-
-        <div class="notice">
-          এটি একটি ফ্রি ডেমো সহকারী। এটি পরিচিত প্রশ্ন ও বিষয়ভিত্তিক নিয়ম থেকে উত্তর দেয়; আসল অনলাইন AI নয়।
-        </div>
-
-        <div id="chatMessages" aria-live="polite"></div>
-
-        <div class="suggestions">
-          <button onclick="askSuggestion('তোমার নাম কী?')">তোমার নাম কী?</button>
-          <button onclick="askSuggestion('How can I study better?')">Study tips</button>
-          <button onclick="askSuggestion('সুযোগ ব্যয় কী?')">সুযোগ ব্যয়</button>
-          <button onclick="askSuggestion('What is binary?')">Binary</button>
-          <button onclick="askSuggestion('Amar routine banate help koro')">Routine help</button>
-        </div>
-
-        <div class="chat-input-area">
-          <input id="chatInput" type="text"
-            placeholder="প্রশ্ন লেখো / Type your question..."
-            autocomplete="off">
-          <button onclick="sendMessage()">Send ➤</button>
-        </div>
-      </section>
-    </div>
+      <div class="button-row">
+        <button class="secondary-btn" onclick="clearSessions()">
+          সেশনের ইতিহাস মুছো
+        </button>
+      </div>
+    </section>
   </main>
 
   <footer>
@@ -529,23 +353,6 @@
     let routines = readStorage(ROUTINE_KEY, []);
     let sessions = readStorage(SESSION_KEY, []);
     let activeStudy = readStorage(ACTIVE_KEY, null);
-    let timerInterval = null;
-
-    // ---------- PAGE NAVIGATION ----------
-    function showPage(page) {
-      const home = page === "home";
-      document.getElementById("homePage").classList.toggle("hidden", !home);
-      document.getElementById("chatPage").classList.toggle("hidden", home);
-      document.getElementById("homeNav").classList.toggle("active", home);
-      document.getElementById("chatNav").classList.toggle("active", !home);
-
-      if (!home && document.getElementById("chatMessages").children.length === 0) {
-        addMessage(
-          "bot",
-          "আসসালামু আলাইকুম! 👋 আমি DailyLife-এর ডেমো সহকারী।\n\nবাংলা, English অথবা Roman Bangla-তে প্রশ্ন করতে পারো। যেমন: “tomar nam ki?” বা “Explain opportunity cost.”"
-        );
-      }
-    }
 
     // ---------- ROUTINES ----------
     function addRoutine() {
@@ -566,8 +373,10 @@
       });
 
       saveStorage(ROUTINE_KEY, routines);
+
       document.getElementById("routineName").value = "";
       document.getElementById("routineNote").value = "";
+
       renderRoutines();
     }
 
@@ -575,8 +384,10 @@
       const list = document.getElementById("routineList");
       list.replaceChildren();
 
-      const empty = document.getElementById("routineEmpty");
-      empty.classList.toggle("hidden", routines.length > 0);
+      document.getElementById("routineEmpty").classList.toggle(
+        "hidden",
+        routines.length > 0
+      );
 
       const sorted = [...routines].sort((a, b) =>
         (a.time || "99:99").localeCompare(b.time || "99:99")
@@ -588,7 +399,10 @@
 
         const details = document.createElement("div");
         const title = document.createElement("strong");
-        title.textContent = (item.time ? item.time + " — " : "") + item.name;
+
+        title.textContent =
+          (item.time ? item.time + " — " : "") + item.name;
+
         details.appendChild(title);
 
         if (item.note) {
@@ -620,11 +434,13 @@
         "পদার্থবিজ্ঞান", "রসায়ন", "জীববিজ্ঞান",
         "উচ্চতর গণিত", "আইসিটি", "বাংলা", "ইংরেজি"
       ],
+
       Commerce: [
         "হিসাববিজ্ঞান", "ব্যবসায় সংগঠন ও ব্যবস্থাপনা",
         "ফিন্যান্স ও ব্যাংকিং", "অর্থনীতি", "আইসিটি",
         "বাংলা", "ইংরেজি"
       ],
+
       Arts: [
         "ইতিহাস", "পৌরনীতি ও সুশাসন", "অর্থনীতি",
         "যুক্তিবিদ্যা", "আইসিটি", "বাংলা", "ইংরেজি"
@@ -635,6 +451,7 @@
       const group = document.getElementById("classGroup").value;
       const select = document.getElementById("subject");
       const oldValue = select.value;
+
       select.replaceChildren();
 
       subjectGroups[group].forEach(subject => {
@@ -656,7 +473,9 @@
       let seconds = activeStudy.elapsed || 0;
 
       if (activeStudy.running && activeStudy.startedAt) {
-        seconds += Math.floor((Date.now() - activeStudy.startedAt) / 1000);
+        seconds += Math.floor(
+          (Date.now() - activeStudy.startedAt) / 1000
+        );
       }
 
       return Math.max(0, seconds);
@@ -664,9 +483,11 @@
 
     function formatTime(seconds) {
       seconds = Math.max(0, Math.floor(seconds));
+
       const h = String(Math.floor(seconds / 3600)).padStart(2, "0");
       const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, "0");
       const s = String(seconds % 60).padStart(2, "0");
+
       return h + ":" + m + ":" + s;
     }
 
@@ -681,8 +502,14 @@
       const status = document.getElementById("timerStatus");
 
       start.classList.toggle("hidden", !!activeStudy);
-      pause.classList.toggle("hidden", !activeStudy || !activeStudy.running);
-      resume.classList.toggle("hidden", !activeStudy || activeStudy.running);
+      pause.classList.toggle(
+        "hidden",
+        !activeStudy || !activeStudy.running
+      );
+      resume.classList.toggle(
+        "hidden",
+        !activeStudy || activeStudy.running
+      );
       stop.classList.toggle("hidden", !activeStudy);
 
       if (!activeStudy) {
@@ -702,7 +529,7 @@
         startedAt: Date.now(),
         elapsed: 0,
         running: true,
-        date: new Date().toLocaleDateString("en-CA")
+        date: todayKey()
       };
 
       saveStorage(ACTIVE_KEY, activeStudy);
@@ -735,7 +562,7 @@
 
       const seconds = elapsedSeconds();
       const subject = activeStudy.subject;
-      const date = activeStudy.date || new Date().toLocaleDateString("en-CA");
+      const date = activeStudy.date || todayKey();
 
       if (seconds < 1) {
         if (!confirm("সময় প্রায় ০। এই সেশন সেভ করবে?")) return;
@@ -750,6 +577,7 @@
       });
 
       saveStorage(SESSION_KEY, sessions);
+
       activeStudy = null;
 
       try {
@@ -758,12 +586,14 @@
 
       updateTimerUI();
       renderSummary();
+
       alert("Study session সেভ হয়েছে! ভালো কাজ! 🎉");
     }
 
     // ---------- DAILY SUMMARY ----------
     function todayKey() {
       const now = new Date();
+
       return now.getFullYear() + "-" +
         String(now.getMonth() + 1).padStart(2, "0") + "-" +
         String(now.getDate()).padStart(2, "0");
@@ -771,13 +601,19 @@
 
     function renderSummary() {
       const today = todayKey();
-      const todaySessions = sessions.filter(s => s.date === today);
+
+      const todaySessions = sessions.filter(
+        session => session.date === today
+      );
+
       const totalSeconds = todaySessions.reduce(
-        (sum, s) => sum + (Number(s.seconds) || 0), 0
+        (sum, session) => sum + (Number(session.seconds) || 0),
+        0
       );
 
       document.getElementById("todayMinutes").textContent =
         Math.floor(totalSeconds / 60);
+
       document.getElementById("todaySessions").textContent =
         todaySessions.length;
 
@@ -785,19 +621,22 @@
       list.replaceChildren();
 
       document.getElementById("sessionEmpty").classList.toggle(
-        "hidden", todaySessions.length > 0
+        "hidden",
+        todaySessions.length > 0
       );
 
-      [...todaySessions].reverse().forEach(s => {
+      [...todaySessions].reverse().forEach(session => {
         const row = document.createElement("div");
         row.className = "session-item";
 
         const details = document.createElement("div");
+
         const name = document.createElement("strong");
-        name.textContent = s.subject;
+        name.textContent = session.subject;
+
         const duration = document.createElement("div");
         duration.className = "small";
-        duration.textContent = formatTime(s.seconds);
+        duration.textContent = formatTime(session.seconds);
 
         details.append(name, duration);
         row.appendChild(details);
@@ -813,369 +652,17 @@
       renderSummary();
     }
 
-    // ---------- DEMO CHATBOT ----------
-    // Bengali, English এবং Roman Bangla-র সাধারণ প্রশ্ন
-    // বোঝার জন্য টেক্সট স্বাভাবিক করা হয়।
-
-    function normalizeText(value) {
-      return String(value || "")
-        .toLowerCase()
-        .normalize("NFKC")
-        .replace(/[’‘`]/g, "'")
-        .replace(/[?!.,;:()[\]{}"'"]/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-    }
-
-    function hasAny(text, patterns) {
-      return patterns.some(pattern => pattern.test(text));
-    }
-
-    function getSmartReply(message) {
-      const raw = String(message || "").trim();
-      const text = normalizeText(raw);
-
-      if (!text) {
-        return "একটি প্রশ্ন লিখে পাঠাও। 😊";
-      }
-
-      // Greetings
-      if (hasAny(text, [
-        /^(hi|hello|hey|hii+|salam|assalamu alaikum|assalamualaikum)\b/,
-        /^(হ্যালো|হাই|আসসালামু আলাইকুম|সালাম)\b/,
-        /\bgood morning\b/,
-        /\bgood evening\b/,
-        /\bgood afternoon\b/
-      ])) {
-        return "হ্যালো! 👋 কেমন আছো?\n\nপড়াশোনা, রুটিন, ICT বা অন্য কোনো সাধারণ বিষয়ে প্রশ্ন করতে পারো। বাংলা, English কিংবা Roman Bangla—যেভাবে স্বাচ্ছন্দ্য বোধ করো, সেভাবে লেখো।";
-      }
-
-      // Identity and name
-      if (hasAny(text, [
-        /তোমার নাম/,
-        /তোমার নাম কি/,
-        /নাম কি/,
-        /তুমি কে/,
-        /তোমাকে কি বলে/,
-        /\b(tomar|tomar|apnar) (nam|naam)\b/,
-        /\b(tumi ke|tumi ki|apni ke)\b/,
-        /\bwhat is your name\b/,
-        /\bwhats your name\b/,
-        /\byour name\b/,
-        /\bwho are you\b/
-      ])) {
-        return "আমার নাম DailyLife AI! 🤖💙\n\nআমি তোমার পড়াশোনা ও রুটিনের ডেমো সহকারী। আমি কিছু পরিচিত প্রশ্নের উত্তর দিতে পারি, তবে আমি এখনো আসল অনলাইন AI নই।";
-      }
-
-      // How are you
-      if (hasAny(text, [
-        /কেমন আছ/,
-        /\bkemon acho\b/,
-        /\bkemon acho tumi\b/,
-        /\bkemon aso\b/,
-        /\bhow are you\b/,
-        /\bhow r u\b/
-      ])) {
-        return "আমি ঠিকভাবে কাজ করছি! 😊 তুমি কেমন আছো? আজ কী পড়ছো?";
-      }
-
-      // Capabilities
-      if (hasAny(text, [
-        /\bwhat can you do\b/,
-        /\bhow can you help\b/,
-        /\btumi ki korte paro\b/,
-        /\bki ki paro\b/,
-        /কী করতে পার/,
-        /কি করতে পার/,
-        /কীভাবে সাহায্য/
-      ])) {
-        return "আমি এই ডেমোতে তোমাকে কয়েকভাবে সাহায্য করতে পারি:\n\n১. পড়ার রুটিন সাজাতে\n২. Study Timer ব্যবহার করতে\n৩. অর্থনীতি ও পৌরনীতির কিছু ধারণা বুঝতে\n৪. ICT-এর Binary ও UTF-8-এর প্রাথমিক ধারণা বুঝতে\n৫. পড়াশোনার সাধারণ টিপস পেতে\n\nঅন্য প্রশ্নও করো—তবে সব প্রশ্নের উত্তর আমার জানা নেই।";
-      }
-
-      // Thanks
-      if (hasAny(text, [
-        /ধন্যবাদ/,
-        /\bthank you\b/,
-        /\bthanks\b/,
-        /\bthnx\b/,
-        /\bdhonnobad\b/,
-        /\bdhonobad\b/
-      ])) {
-        return "স্বাগতম! 💙 ধীরে ধীরে শেখো, আর কোনো বিষয় না বুঝলে সহজ করে বুঝিয়ে দেওয়ার জন্য প্রশ্ন করো।";
-      }
-
-      // Study motivation
-      if (hasAny(text, [
-        /পড়তে ইচ্ছা/,
-        /পড়তে ইচ্ছা/,
-        /মন বসে না/,
-        /মন বসছে না/,
-        /\bporte iccha\b/,
-        /\bmon boshe na\b/,
-        /\bmotivation\b/,
-        /\blazy\b/,
-        /\bprocrastinat/,
-        /\bcan't focus\b/,
-        /\bcannot focus\b/,
-        /\bhow to focus\b/,
-        /মনোযোগ/
-      ])) {
-        return "আজ ছোট করে শুরু করো। 💪\n\n১. একটি ছোট টপিক বেছে নাও।\n২. ১৫ মিনিটের Study Timer চালু করো।\n৩. ফোনের অপ্রয়োজনীয় নোটিফিকেশন বন্ধ রাখো।\n৪. ১৫ মিনিট শেষে একটু বিরতি নাও।\n\nএকবারেই অনেক পড়তে হবে না—নিয়মিত অল্প অল্প পড়াই গুরুত্বপূর্ণ।";
-      }
-
-      // Routine help
-      if (hasAny(text, [
-        /রুটিন/,
-        /\broutine\b/,
-        /\bdaily plan\b/,
-        /\btime table\b/,
-        /\btimetable\b/,
-        /\bamar routine\b/,
-        /\broutine ban/,
-        /\bmake me a schedule\b/
-      ])) {
-        return "রুটিন বানানোর সহজ পদ্ধতি:\n\n১. কলেজ ও প্রয়োজনীয় কাজের সময় আগে লেখো।\n২. প্রতিটি পড়ার সেশনের জন্য ২৫–৪০ মিনিট রাখো, প্রয়োজন অনুযায়ী কমবেশি করো।\n৩. বিষয় বদলানোর মাঝে বিরতি রাখো।\n৪. ঘুম, খাবার ও বিশ্রামের সময় বাদ দিও না।\n\nতোমার DailyLife-এর Home পেজে গিয়ে সময় ও কাজ লিখে রুটিন যোগ করতে পারো।";
-      }
-
-      // Study timer
-      if (hasAny(text, [
-        /\bstudy timer\b/,
-        /\btimer use\b/,
-        /\bhow to track study\b/,
-        /\bpora track\b/,
-        /পড়ার সময়/,
-        /পড়ার সময়/,
-        /সময় হিসাব/,
-        /সময় হিসাব/
-      ])) {
-        return "Study Timer ব্যবহার করতে Home পেজে যাও। 📚\n\n১. বিভাগ ও বিষয় নির্বাচন করো।\n২. Start চাপো।\n৩. বিরতি নিলে Pause চাপো।\n৪. আবার পড়া শুরু করলে Resume চাপো।\n৫. শেষ হলে Stop & Save চাপো।\n\nআজকের মোট সময় নিচের Study Summary-তে দেখা যাবে।";
-      }
-
-      // Opportunity cost / economics
-      if (hasAny(text, [
-        /সুযোগ ব্যয়/,
-        /সুযোগ ব্যয়/,
-        /\bopportunity cost\b/,
-        /\bsujog bey\b/,
-        /\bsujog beye\b/
-      ])) {
-        return "সুযোগ ব্যয় (Opportunity Cost) হলো কোনো একটি বিকল্প বেছে নেওয়ার কারণে ছেড়ে দেওয়া পরবর্তী সেরা বিকল্পের মূল্য।\n\nউদাহরণ: তোমার হাতে ১ ঘণ্টা আছে। তুমি হয় অর্থনীতি পড়তে পারো, নয়তো ICT পড়তে পারো। অর্থনীতি পড়ার সিদ্ধান্ত নিলে ICT পড়ার যে সুযোগ ছেড়ে দিলে, সেটিই এখানে সুযোগ ব্যয়ের উদাহরণ।\n\nসহজ কথা: একটি বেছে নিলে যে সেরা বিকল্পটি ছাড়তে হয়, সেটিই সুযোগ ব্যয়।";
-      }
-
-      // Production possibility curve
-      if (hasAny(text, [
-        /উৎপাদন সম্ভাবনা রেখা/,
-        /\bproduction possibility curve\b/,
-        /\bproduction possibilities curve\b/,
-        /\bppc\b/,
-        /\butpadon somvabona\b/
-      ])) {
-        return "উৎপাদন সম্ভাবনা রেখা (PPC) দেখায়, নির্দিষ্ট সম্পদ ও প্রযুক্তি দিয়ে একটি অর্থনীতি দুই ধরনের পণ্যের সর্বোচ্চ কতগুলো সমন্বয় উৎপাদন করতে পারে।\n\nমনে রাখবে:\n• রেখার ওপরের বিন্দু: সম্পদের দক্ষ ব্যবহার।\n• রেখার ভেতরের বিন্দু: সাধারণভাবে কিছু সম্পদ অব্যবহৃত বা অদক্ষভাবে ব্যবহৃত হচ্ছে।\n• রেখার বাইরের বিন্দু: বর্তমান সম্পদ ও প্রযুক্তিতে অর্জন করা সম্ভব নয়।\n\nচিত্র বা নির্দিষ্ট প্রশ্ন দিলে সেটি ধরে আরও সহজভাবে বুঝিয়ে দেওয়া যাবে।";
-      }
-
-      // MRPT
-      if (hasAny(text, [
-        /\bmrpt\b/,
-        /প্রান্তিক রূপান্তর/,
-        /\bmarginal rate of product transformation\b/,
-        /\bmarginal rate of transformation\b/
-      ])) {
-        return "MRPT-এর পূর্ণরূপ Marginal Rate of Product Transformation। এটি উৎপাদনের ক্ষেত্রে এক পণ্যের অতিরিক্ত এক একক পেতে অন্য পণ্যের কত একক ছাড়তে হয়, সেই অনুপাত বোঝায়।\n\nসহজভাবে: একটি পণ্যের উৎপাদন বাড়াতে অন্য পণ্যের উৎপাদন কতটা কমাতে হচ্ছে—এটাই মূল ধারণা।\n\nতোমার বইয়ের নির্দিষ্ট অঙ্ক বা চিত্র দিলে সেটি ধরে ধাপে ধাপে ব্যাখ্যা করা যাবে।";
-      }
-
-      // Economics general
-      if (hasAny(text, [
-        /\barthoshastra\b/,
-        /\barthonoiti\b/,
-        /অর্থনীতি/,
-        /\beconomics\b/,
-        /\beconomy\b/
-      ])) {
-        return "অর্থনীতি নিয়ে কোন অংশটি জানতে চাও? 😊\n\nযেমন:\n• নির্বাচন ও সুযোগ ব্যয়\n• উৎপাদন সম্ভাবনা রেখা (PPC)\n• MRPT\n• বেকারত্ব\n\nপ্রশ্নটি বা বইয়ের নির্দিষ্ট অংশটি লিখে পাঠাও।";
-      }
-
-      // Civics
-      if (hasAny(text, [
-        /পৌরনীতি/,
-        /সুশাসন/,
-        /\bcivics\b/,
-        /\bcivic sense\b/,
-        /\bgovernance\b/,
-        /\bshushashon\b/,
-        /\bpouroniti\b/
-      ])) {
-        return "পৌরনীতি ও সুশাসন বুঝতে প্রথমে সংজ্ঞা, মূল বৈশিষ্ট্য এবং উদাহরণ আলাদা করে পড়ো।\n\nকোন বিষয়টি জানতে চাও—রাষ্ট্র, নাগরিকতা, সরকার, সংবিধান, গণতন্ত্র নাকি সুশাসন? নির্দিষ্ট প্রশ্ন লিখলে আমি পরিচিত ধারণা অনুযায়ী বুঝিয়ে দেওয়ার চেষ্টা করব।";
-      }
-
-      // History
-      if (hasAny(text, [
-        /ইতিহাস/,
-        /\bhistory\b/,
-        /\bitihash\b/
-      ])) {
-        return "ইতিহাস পড়ার সময় প্রতিটি ঘটনার ৪টি দিক মনে রাখো:\n\n১. কখন ঘটেছিল?\n২. কোথায় ঘটেছিল?\n৩. কেন ঘটেছিল?\n৪. ফলাফল কী হয়েছিল?\n\nকোন ঘটনা বা অধ্যায় নিয়ে প্রশ্ন আছে? নাম লিখে পাঠাও।";
-      }
-
-      // Logic
-      if (hasAny(text, [
-        /যুক্তিবিদ্যা/,
-        /\blogic\b/,
-        /\bjukti bidda\b/,
-        /\bjukti\b/
-      ])) {
-        return "যুক্তিবিদ্যার প্রশ্নে আগে বুঝে নাও—কী দেওয়া আছে এবং কী বের করতে হবে। সংজ্ঞা, উদাহরণ ও ধাপ আলাদা করে দেখলে সহজ হয়।\n\nতোমার যুক্তিবিদ্যার নির্দিষ্ট প্রশ্নটি লিখে পাঠাও।";
-      }
-
-      // ICT / Binary
-      if (hasAny(text, [
-        /\bbinary\b/,
-        /\bবাইনারি\b/,
-        /\bboolean\b/,
-        /\bict\b/,
-        /\bআইসিটি\b/,
-        /\bbinary addition\b/,
-        /\bbit\b/,
-        /\bbyte\b/
-      ])) {
-        return "ICT-এর কিছু গুরুত্বপূর্ণ ধারণা:\n\n• Binary-তে ০ ও ১ ব্যবহার করা হয়।\n• ১ + ১ = ১০ (বাইনারিতে), কারণ ২-এর মান বাইনারিতে ১০।\n• ৮ bit = ১ byte।\n\nতুমি কোন অংশটি জানতে চাও—Binary যোগ, ঋণাত্মক সংখ্যা, hexadecimal, নাকি অন্য কিছু?";
-      }
-
-      // UTF-8 / encoding
-      if (hasAny(text, [
-        /\butf[\s-]?8\b/,
-        /\bunicode\b/,
-        /\bencoding\b/,
-        /\bcharacter set\b/
-      ])) {
-        return "UTF-8 হলো Unicode character encode করার একটি পদ্ধতি। এতে একটি character encode করতে ১ থেকে ৪ byte পর্যন্ত লাগতে পারে।\n\nসহজভাবে: কম্পিউটারে বিভিন্ন ভাষার অক্ষর সংরক্ষণ ও দেখানোর জন্য UTF-8 ব্যবহার করা হয়। নির্দিষ্ট character বা অঙ্ক দিলে সেটি ধরে বুঝিয়ে দেওয়া যাবে।";
-      }
-
-      // HTML / website
-      if (hasAny(text, [
-        /\bhtml\b/,
-        /\bcss\b/,
-        /\bjavascript\b/,
-        /\bwebsite\b/,
-        /\bweb site\b/,
-        /\bweb development\b/,
-        /\bcode\b/,
-        /\bcoding\b/,
-        /ওয়েবসাইট/,
-        /ওয়েবসাইট/,
-        /\bgithub\b/
-      ])) {
-        return "তোমার DailyLife ওয়েবসাইটে:\n\n• HTML পেজের কাঠামো তৈরি করে।\n• CSS ডিজাইন ও রং ঠিক করে।\n• JavaScript বাটন, Timer ও অন্যান্য কাজ চালায়।\n\nকোন কোডে সমস্যা হচ্ছে বা কী ফিচার যোগ করতে চাও, সেটি বলো। কোড বদলানোর সময় তোমার পুরোনো ফিচারগুলো ধরে রাখা জরুরি।";
-      }
-
-      // English study questions
-      if (hasAny(text, [
-        /\bhow to study\b/,
-        /\bstudy tips\b/,
-        /\bexam preparation\b/,
-        /\bprepare for exam\b/,
-        /\bhow can i improve\b/,
-        /\bimprove my study\b/
-      ])) {
-        return "Here are a few practical study tips:\n\n1. Choose one small topic.\n2. Study for 20–30 minutes, or start with 15 minutes if that feels easier.\n3. Take a short break.\n4. Recall what you learned without looking at the book.\n5. Review difficult parts later.\n\nKeep your plan realistic and allow time for meals, rest, and sleep.";
-      }
-
-      // Roman Bangla common study terms
-      if (hasAny(text, [
-        /\bami ki korbo\b/,
-        /\bki korbo\b/,
-        /\bki kori\b/,
-        /\bhelp koro\b/,
-        /\bhelp korbe\b/,
-        /\bbojhao\b/,
-        /\bbujhao\b/,
-        /\bbujhi na\b/,
-        /\bbujhte pari na\b/
-      ])) {
-        return "অবশ্যই, সাহায্য করার চেষ্টা করব। 😊\n\nকোন বিষয় বা প্রশ্নটি বুঝতে পারছ না, সেটি একটু বিস্তারিত লিখে দাও। বাংলা, English বা Roman Bangla—যেভাবেই লেখো, আমি পরিচিত শব্দগুলো বুঝে উত্তর দেওয়ার চেষ্টা করব।";
-      }
-
-      // Goodbye
-      if (hasAny(text, [
-        /বিদায়/,
-        /\bbye\b/,
-        /\bgoodbye\b/,
-        /\bsee you\b/,
-        /\bAllah hafez\b/,
-        /\ballah hafiz\b/
-      ])) {
-        return "আচ্ছা, ভালো থেকো! 💙 নিয়মিত অল্প অল্প পড়ো, বিশ্রাম নাও, আর নিজের অগ্রগতি লক্ষ্য করো।";
-      }
-
-      // Generic fallback
-      return "তোমার প্রশ্নটি বুঝতে পুরোপুরি পারিনি। 😅\n\nআরেকভাবে একটু সহজ করে লেখো, অথবা প্রশ্নটি ছোট ছোট অংশে ভাগ করে পাঠাও।\n\nতুমি বাংলা, English বা Roman Bangla-তে লিখতে পারো। মনে রেখো, আমি এখনো নিয়মভিত্তিক ফ্রি ডেমো—তাই সব নতুন প্রশ্নের উত্তর দিতে পারি না।";
-    }
-
-    // ---------- CHAT MESSAGES ----------
-    function addMessage(sender, text) {
-      const messages = document.getElementById("chatMessages");
-      const row = document.createElement("div");
-      row.className = "message " + sender;
-
-      const bubble = document.createElement("div");
-      bubble.className = "bubble";
-      bubble.textContent = text;
-
-      row.appendChild(bubble);
-      messages.appendChild(row);
-      messages.scrollTop = messages.scrollHeight;
-    }
-
-    function sendMessage() {
-      const input = document.getElementById("chatInput");
-      const message = input.value.trim();
-
-      if (!message) return;
-
-      addMessage("user", message);
-      input.value = "";
-
-      const reply = getSmartReply(message);
-
-      // ডেমো উত্তর দেখাতে সামান্য সময় রাখা হয়েছে।
-      window.setTimeout(() => {
-        addMessage("bot", reply);
-      }, 250);
-    }
-
-    function askSuggestion(question) {
-      document.getElementById("chatInput").value = question;
-      sendMessage();
-    }
-
-    function newChat() {
-      document.getElementById("chatMessages").replaceChildren();
-      addMessage(
-        "bot",
-        "নতুন চ্যাট শুরু হলো! 😊\n\nবাংলা, English অথবা Roman Bangla-তে প্রশ্ন করো।"
-      );
-    }
-
-    document.getElementById("chatInput").addEventListener("keydown", event => {
-      if (event.key === "Enter") {
-        sendMessage();
-      }
-    });
-
     // ---------- INITIALIZE ----------
     function initializeApp() {
-      document.getElementById("year").textContent = new Date().getFullYear();
+      document.getElementById("year").textContent =
+        new Date().getFullYear();
 
       renderRoutines();
       updateSubjects();
       renderSummary();
       updateTimerUI();
 
-      // আগের সেশন চালু থাকলে তার সময় ধরে রাখো।
-      if (activeStudy && activeStudy.running) {
-        saveStorage(ACTIVE_KEY, activeStudy);
-      }
-
-      timerInterval = window.setInterval(() => {
+      window.setInterval(() => {
         if (activeStudy && activeStudy.running) {
           document.getElementById("timer").textContent =
             formatTime(elapsedSeconds());
