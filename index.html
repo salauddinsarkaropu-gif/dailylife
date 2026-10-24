@@ -161,7 +161,7 @@
     }
     /* ---- Routine checkbox শেষ ---- */
 
-    /* ---- Routine edit (নতুন) ---- */
+    /* ---- Routine edit ---- */
     .routine-actions {
       display: flex;
       gap: 6px;
@@ -342,14 +342,14 @@
       <h2>📚 Study Timer</h2>
 
       <label for="classGroup">তোমার বিভাগ</label>
-      <select id="classGroup" onchange="updateSubjects()">
+      <select id="classGroup" onchange="onGroupChange()">
         <option value="Science">Science (বিজ্ঞান)</option>
         <option value="Commerce">Commerce (ব্যবসায় শিক্ষা)</option>
         <option value="Arts" selected>Arts (মানবিক)</option>
       </select>
 
       <label for="subject">কোন বিষয় পড়বে?</label>
-      <select id="subject"></select>
+      <select id="subject" onchange="saveSelection()"></select>
 
       <div id="timer" class="timer">00:00:00</div>
       <p id="timerStatus" class="center small">
@@ -416,6 +416,7 @@
     const ROUTINE_KEY = "dailyLifeRoutines";
     const SESSION_KEY = "dailyLifeStudySessions";
     const ACTIVE_KEY = "dailyLifeActiveStudy";
+    const SELECTION_KEY = "dailyLifeSelection";
 
     function readStorage(key, fallback) {
       try {
@@ -694,6 +695,36 @@
       }
     }
 
+    // বর্তমান বিভাগ ও বিষয় মনে রাখা
+    function saveSelection() {
+      saveStorage(SELECTION_KEY, {
+        group: document.getElementById("classGroup").value,
+        subject: document.getElementById("subject").value
+      });
+    }
+
+    // বিভাগ বদলালে বিষয়ের তালিকা বদলাও এবং নতুন পছন্দ সেভ করো
+    function onGroupChange() {
+      updateSubjects();
+      saveSelection();
+    }
+
+    // পেজ খুললে আগের বেছে নেওয়া বিভাগ ও বিষয় ফিরিয়ে আনো
+    function loadSelection() {
+      const saved = readStorage(SELECTION_KEY, null);
+
+      if (saved && subjectGroups[saved.group]) {
+        document.getElementById("classGroup").value = saved.group;
+        updateSubjects();
+
+        if (subjectGroups[saved.group].includes(saved.subject)) {
+          document.getElementById("subject").value = saved.subject;
+        }
+      } else {
+        updateSubjects();
+      }
+    }
+
     // ---------- STUDY TIMER ----------
     function elapsedSeconds() {
       if (!activeStudy) return 0;
@@ -886,7 +917,7 @@
         new Date().getFullYear();
 
       renderRoutines();
-      updateSubjects();
+      loadSelection();
       renderSummary();
       updateTimerUI();
       updateRoutineFormUI();
