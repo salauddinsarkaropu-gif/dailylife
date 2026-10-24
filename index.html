@@ -210,6 +210,33 @@
     }
     /* ---- Routine progress bar শেষ ---- */
 
+    /* ---- আজ / সপ্তাহ / মাস বাটন (নতুন) ---- */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: #e2e8f0;
+      color: #1e293b;
+      padding: 9px 6px;
+    }
+
+    .tab-btn.active {
+      background: var(--blue);
+      color: white;
+      font-weight: 700;
+    }
+
+    #periodTotal {
+      margin: 10px 0 0;
+      font-weight: 600;
+      color: var(--dark-blue);
+    }
+    /* ---- আজ / সপ্তাহ / মাস বাটন শেষ ---- */
+
     /* ---- বিষয়ভিত্তিক সময় ---- */
     .subject-row {
       margin-top: 12px;
@@ -231,7 +258,7 @@
     }
     /* ---- বিষয়ভিত্তিক সময় শেষ ---- */
 
-    /* ---- বিষয়ের লক্ষ্য (নতুন) ---- */
+    /* ---- বিষয়ের লক্ষ্য ---- */
     .target-item {
       border: 1px solid var(--border);
       border-radius: 10px;
@@ -451,7 +478,16 @@
         </div>
       </div>
 
-      <h3>বিষয়ভিত্তিক সময় (আজ)</h3>
+      <h3>বিষয়ভিত্তিক সময়</h3>
+
+      <div class="tabs">
+        <button id="tab-today" class="tab-btn active" onclick="setPeriod('today')">আজ</button>
+        <button id="tab-week" class="tab-btn" onclick="setPeriod('week')">এই সপ্তাহ</button>
+        <button id="tab-month" class="tab-btn" onclick="setPeriod('month')">এই মাস</button>
+      </div>
+
+      <p id="periodTotal" class="small hidden"></p>
+
       <div id="subjectTotals"></div>
       <p id="subjectTotalsEmpty" class="small">
         আজ এখনো কোনো বিষয় পড়া হয়নি।
@@ -519,6 +555,9 @@
 
     // কোন রুটিন এখন edit হচ্ছে (না হলে null)
     let editingId = null;
+
+    // বিষয়ভিত্তিক সময়ের কোন ভিউ খোলা: "today", "week" বা "month"
+    let periodView = "today";
 
     // ---------- HELPERS ----------
     function toBn(number) {
@@ -929,7 +968,7 @@
       alert("Study session সেভ হয়েছে! ভালো কাজ! 🎉");
     }
 
-    // ---------- DAILY SUMMARY ----------
+    // ---------- DATES ----------
     function todayKey() {
       const now = new Date();
 
@@ -938,27 +977,109 @@
         String(now.getDate()).padStart(2, "0");
     }
 
-    // আজকের বিষয়ভিত্তিক মোট সময় দেখানো
-    function renderSubjectTotals(todaySessions, totalSeconds) {
+    // একটি Date থেকে "২০২৬-১০-২৫" ধরনের তারিখের চাবি বানানো
+    function dateToKey(date) {
+      return date.getFullYear() + "-" +
+        String(date.getMonth() + 1).padStart(2, "0") + "-" +
+        String(date.getDate()).padStart(2, "0");
+    }
+
+    // আজ, এই সপ্তাহ (শনিবার–শুক্রবার) বা এই মাসের শুরু ও শেষ তারিখ
+    function periodRange(period) {
+      const now = new Date();
+      const today = new Date(
+        now.getFullYear(), now.getMonth(), now.getDate()
+      );
+
+      if (period === "week") {
+        // শনিবার = ৬, তাই শনিবার থেকে কত দিন পেরোল তা বের করি
+        const daysSinceSaturday = (today.getDay() + 1) % 7;
+
+        const start = new Date(
+          today.getFullYear(), today.getMonth(),
+          today.getDate() - daysSinceSaturday
+        );
+
+        const end = new Date(
+          start.getFullYear(), start.getMonth(), start.getDate() + 6
+        );
+
+        return { start: dateToKey(start), end: dateToKey(end) };
+      }
+
+      if (period === "month") {
+        const start = new Date(today.getFullYear(), today.getMonth(), 1);
+        const end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+        return { start: dateToKey(start), end: dateToKey(end) };
+      }
+
+      const key = dateToKey(today);
+      return { start: key, end: key };
+    }
+
+    // ---------- DAILY SUMMARY ----------
+    const periodTexts = {
+      today: {
+        total: "আজ মোট: ",
+        empty: "আজ এখনো কোনো বিষয় পড়া হয়নি।"
+      },
+      week: {
+        total: "এই সপ্তাহে মোট: ",
+        empty: "এই সপ্তাহে এখনো কোনো বিষয় পড়া হয়নি।"
+      },
+      month: {
+        total: "এই মাসে মোট: ",
+        empty: "এই মাসে এখনো কোনো বিষয় পড়া হয়নি।"
+      }
+    };
+
+    function setPeriod(period) {
+      periodView = period;
+      renderSubjectTotals();
+    }
+
+    // বেছে নেওয়া সময়ের (আজ/সপ্তাহ/মাস) বিষয়ভিত্তিক মোট সময় দেখানো
+    function renderSubjectTotals() {
       const box = document.getElementById("subjectTotals");
       box.replaceChildren();
 
-      const totals = {};
+      ["today", "week", "month"].forEach(name => {
+        document.getElementById("tab-" + name).classList.toggle(
+          "active",
+          name === periodView
+        );
+      });
 
-      todaySessions.forEach(session => {
+      const range = periodRange(periodView);
+
+      const periodSessions = sessions.filter(
+        session => session.date >= range.start && session.date <= range.end
+      );
+
+      const totals = {};
+      let totalSeconds = 0;
+
+      periodSessions.forEach(session => {
         const name = session.subject || "অজানা বিষয়";
-        totals[name] =
-          (totals[name] || 0) + (Number(session.seconds) || 0);
+        const seconds = Number(session.seconds) || 0;
+
+        totals[name] = (totals[name] || 0) + seconds;
+        totalSeconds += seconds;
       });
 
       const entries = Object.entries(totals).sort(
         (a, b) => b[1] - a[1]
       );
 
-      document.getElementById("subjectTotalsEmpty").classList.toggle(
-        "hidden",
-        entries.length > 0
-      );
+      const totalLine = document.getElementById("periodTotal");
+      totalLine.textContent =
+        periodTexts[periodView].total + formatTime(totalSeconds);
+      totalLine.classList.toggle("hidden", entries.length === 0);
+
+      const emptyLine = document.getElementById("subjectTotalsEmpty");
+      emptyLine.textContent = periodTexts[periodView].empty;
+      emptyLine.classList.toggle("hidden", entries.length > 0);
 
       entries.forEach(([name, seconds]) => {
         const percent = totalSeconds > 0
@@ -1011,7 +1132,7 @@
       document.getElementById("todaySessions").textContent =
         todaySessions.length;
 
-      renderSubjectTotals(todaySessions, totalSeconds);
+      renderSubjectTotals();
 
       const list = document.getElementById("sessionList");
       list.replaceChildren();
