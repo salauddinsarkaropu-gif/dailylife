@@ -92,6 +92,72 @@
     const button = document.getElementById("addButton");
     const list = document.getElementById("routineList");
 
+    let routines = [];
+
+    try {
+      const saved = localStorage.getItem("dailyLifeRoutines");
+      const parsed = saved ? JSON.parse(saved) : [];
+
+      if (
+        Array.isArray(parsed) &&
+        parsed.every(r =>
+          r &&
+          typeof r.task === "string" &&
+          typeof r.done === "boolean"
+        )
+      ) {
+        routines = parsed;
+      }
+    } catch (error) {
+      routines = [];
+    }
+
+    function saveRoutines() {
+      try {
+        localStorage.setItem(
+          "dailyLifeRoutines",
+          JSON.stringify(routines)
+        );
+      } catch (error) {
+        alert("রুটিন সেভ হয়নি। ব্রাউজারের স্টোরেজ পরীক্ষা করো।");
+      }
+    }
+
+    function renderRoutines() {
+      list.replaceChildren();
+
+      routines.forEach(function (routine, index) {
+        const item = document.createElement("li");
+
+        const tick = document.createElement("span");
+        tick.className = "tick";
+        tick.textContent = routine.done ? "✓" : "";
+        tick.setAttribute("aria-label", "সম্পন্ন");
+        item.appendChild(tick);
+
+        const taskText = document.createElement("span");
+        taskText.textContent = routine.task + " ";
+        item.appendChild(taskText);
+
+        const doneButton = document.createElement("button");
+        doneButton.type = "button";
+        doneButton.className = "done-button";
+        doneButton.textContent = routine.done
+          ? "সম্পন্ন হয়েছে!"
+          : "✓ সম্পন্ন";
+        doneButton.disabled = routine.done;
+
+        doneButton.addEventListener("click", function () {
+          routines[index].done = true;
+          saveRoutines();
+          renderRoutines();
+        });
+
+        item.appendChild(doneButton);
+        list.appendChild(item);
+      });
+    }
+
     function addRoutine() {
       const task = input.value.trim();
 
@@ -101,31 +167,13 @@
         return;
       }
 
-      const item = document.createElement("li");
-
-      const tick = document.createElement("span");
-      tick.className = "tick";
-      tick.textContent = "";
-      tick.setAttribute("aria-label", "সম্পন্ন");
-      item.appendChild(tick);
-
-      const taskText = document.createElement("span");
-      taskText.textContent = task + " ";
-      item.appendChild(taskText);
-
-      const doneButton = document.createElement("button");
-      doneButton.textContent = "✓ সম্পন্ন";
-      doneButton.type = "button";
-      doneButton.className = "done-button";
-
-      doneButton.addEventListener("click", function () {
-        tick.textContent = "✓";
-        doneButton.textContent = "সম্পন্ন হয়েছে!";
-        doneButton.disabled = true;
+      routines.push({
+        task: task,
+        done: false
       });
 
-      item.appendChild(doneButton);
-      list.appendChild(item);
+      saveRoutines();
+      renderRoutines();
 
       input.value = "";
       input.focus();
@@ -138,6 +186,8 @@
         addRoutine();
       }
     });
+
+    renderRoutines();
   </script>
 </body>
 </html>
