@@ -161,7 +161,26 @@
     }
     /* ---- Routine checkbox শেষ ---- */
 
-    /* ---- Routine progress bar (নতুন) ---- */
+    /* ---- Routine edit (নতুন) ---- */
+    .routine-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .edit-btn {
+      background: #dbeafe;
+      color: var(--dark-blue);
+      padding: 7px 10px;
+    }
+
+    .routine-item.editing {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 2px #93c5fd;
+    }
+    /* ---- Routine edit শেষ ---- */
+
+    /* ---- Routine progress bar ---- */
     .progress-box {
       margin-top: 16px;
       padding: 14px;
@@ -302,7 +321,10 @@
       </div>
 
       <div class="button-row">
-        <button onclick="addRoutine()">➕ রুটিন যোগ করো</button>
+        <button id="routineSaveBtn" onclick="saveRoutine()">➕ রুটিন যোগ করো</button>
+        <button id="routineCancelBtn" class="secondary-btn hidden" onclick="cancelEdit()">
+          বাতিল
+        </button>
       </div>
 
       <div id="routineList"></div>
@@ -416,6 +438,9 @@
     let sessions = readStorage(SESSION_KEY, []);
     let activeStudy = readStorage(ACTIVE_KEY, null);
 
+    // কোন রুটিন এখন edit হচ্ছে (না হলে null)
+    let editingId = null;
+
     // ---------- HELPERS ----------
     function toBn(number) {
       const digits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
@@ -423,7 +448,26 @@
     }
 
     // ---------- ROUTINES ----------
-    function addRoutine() {
+    function updateRoutineFormUI() {
+      const saveBtn = document.getElementById("routineSaveBtn");
+      const cancelBtn = document.getElementById("routineCancelBtn");
+
+      if (editingId !== null) {
+        saveBtn.textContent = "✅ পরিবর্তন সেভ করো";
+        cancelBtn.classList.remove("hidden");
+      } else {
+        saveBtn.textContent = "➕ রুটিন যোগ করো";
+        cancelBtn.classList.add("hidden");
+      }
+    }
+
+    function clearRoutineForm() {
+      document.getElementById("routineName").value = "";
+      document.getElementById("routineTime").value = "";
+      document.getElementById("routineNote").value = "";
+    }
+
+    function saveRoutine() {
       const name = document.getElementById("routineName").value.trim();
       const time = document.getElementById("routineTime").value;
       const note = document.getElementById("routineNote").value.trim();
@@ -433,18 +477,62 @@
         return;
       }
 
-      routines.push({
-        id: Date.now() + Math.random(),
-        name: name,
-        time: time,
-        note: note
-      });
+      if (editingId !== null) {
+        // পুরোনো রুটিন বদলানো (টিক দেওয়া থাকলে সেটা থেকে যাবে)
+        routines = routines.map(item => {
+          if (item.id !== editingId) return item;
+
+          return {
+            ...item,
+            name: name,
+            time: time,
+            note: note
+          };
+        });
+
+        editingId = null;
+        clearRoutineForm();
+      } else {
+        // নতুন রুটিন যোগ করা
+        routines.push({
+          id: Date.now() + Math.random(),
+          name: name,
+          time: time,
+          note: note
+        });
+
+        document.getElementById("routineName").value = "";
+        document.getElementById("routineNote").value = "";
+      }
 
       saveStorage(ROUTINE_KEY, routines);
 
-      document.getElementById("routineName").value = "";
-      document.getElementById("routineNote").value = "";
+      updateRoutineFormUI();
+      renderRoutines();
+    }
 
+    function startEdit(id) {
+      const item = routines.find(r => r.id === id);
+      if (!item) return;
+
+      editingId = id;
+
+      document.getElementById("routineName").value = item.name || "";
+      document.getElementById("routineTime").value = item.time || "";
+      document.getElementById("routineNote").value = item.note || "";
+
+      updateRoutineFormUI();
+      renderRoutines();
+
+      const nameInput = document.getElementById("routineName");
+      nameInput.scrollIntoView({ behavior: "smooth", block: "center" });
+      nameInput.focus();
+    }
+
+    function cancelEdit() {
+      editingId = null;
+      clearRoutineForm();
+      updateRoutineFormUI();
       renderRoutines();
     }
 
@@ -467,7 +555,10 @@
         const isDone = item.doneDate === today;
 
         const row = document.createElement("div");
-        row.className = "routine-item" + (isDone ? " done" : "");
+        row.className =
+          "routine-item" +
+          (isDone ? " done" : "") +
+          (item.id === editingId ? " editing" : "");
 
         const check = document.createElement("input");
         check.type = "checkbox";
@@ -491,12 +582,22 @@
           details.appendChild(note);
         }
 
+        const actions = document.createElement("div");
+        actions.className = "routine-actions";
+
+        const edit = document.createElement("button");
+        edit.className = "edit-btn";
+        edit.textContent = "সম্পাদনা";
+        edit.onclick = () => startEdit(item.id);
+
         const del = document.createElement("button");
         del.className = "delete-btn";
         del.textContent = "মুছো";
         del.onclick = () => deleteRoutine(item.id);
 
-        row.append(check, details, del);
+        actions.append(edit, del);
+
+        row.append(check, details, actions);
         list.appendChild(row);
       });
 
@@ -543,6 +644,13 @@
     }
 
     function deleteRoutine(id) {
+      // যে কাজ edit হচ্ছে সেটা মুছলে edit বন্ধ করে দাও
+      if (editingId === id) {
+        editingId = null;
+        clearRoutineForm();
+        updateRoutineFormUI();
+      }
+
       routines = routines.filter(item => item.id !== id);
       saveStorage(ROUTINE_KEY, routines);
       renderRoutines();
@@ -606,191 +714,4 @@
 
       const h = String(Math.floor(seconds / 3600)).padStart(2, "0");
       const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, "0");
-      const s = String(seconds % 60).padStart(2, "0");
-
-      return h + ":" + m + ":" + s;
-    }
-
-    function updateTimerUI() {
-      document.getElementById("timer").textContent =
-        formatTime(elapsedSeconds());
-
-      const start = document.getElementById("startBtn");
-      const pause = document.getElementById("pauseBtn");
-      const resume = document.getElementById("resumeBtn");
-      const stop = document.getElementById("stopBtn");
-      const status = document.getElementById("timerStatus");
-
-      start.classList.toggle("hidden", !!activeStudy);
-      pause.classList.toggle(
-        "hidden",
-        !activeStudy || !activeStudy.running
-      );
-      resume.classList.toggle(
-        "hidden",
-        !activeStudy || activeStudy.running
-      );
-      stop.classList.toggle("hidden", !activeStudy);
-
-      if (!activeStudy) {
-        status.textContent = "পড়াশোনা শুরু করতে Start চাপো।";
-      } else if (activeStudy.running) {
-        status.textContent = "পড়ছ: " + activeStudy.subject;
-      } else {
-        status.textContent = "পড়াশোনা Pause করা আছে।";
-      }
-    }
-
-    function startStudy() {
-      if (activeStudy) return;
-
-      activeStudy = {
-        subject: document.getElementById("subject").value,
-        startedAt: Date.now(),
-        elapsed: 0,
-        running: true,
-        date: todayKey()
-      };
-
-      saveStorage(ACTIVE_KEY, activeStudy);
-      updateTimerUI();
-    }
-
-    function pauseStudy() {
-      if (!activeStudy || !activeStudy.running) return;
-
-      activeStudy.elapsed = elapsedSeconds();
-      activeStudy.running = false;
-      activeStudy.startedAt = null;
-
-      saveStorage(ACTIVE_KEY, activeStudy);
-      updateTimerUI();
-    }
-
-    function resumeStudy() {
-      if (!activeStudy || activeStudy.running) return;
-
-      activeStudy.startedAt = Date.now();
-      activeStudy.running = true;
-
-      saveStorage(ACTIVE_KEY, activeStudy);
-      updateTimerUI();
-    }
-
-    function stopStudy() {
-      if (!activeStudy) return;
-
-      const seconds = elapsedSeconds();
-      const subject = activeStudy.subject;
-      const date = activeStudy.date || todayKey();
-
-      if (seconds < 1) {
-        if (!confirm("সময় প্রায় ০। এই সেশন সেভ করবে?")) return;
-      }
-
-      sessions.push({
-        id: Date.now(),
-        subject: subject,
-        seconds: seconds,
-        date: date,
-        endedAt: new Date().toISOString()
-      });
-
-      saveStorage(SESSION_KEY, sessions);
-
-      activeStudy = null;
-
-      try {
-        localStorage.removeItem(ACTIVE_KEY);
-      } catch (error) {}
-
-      updateTimerUI();
-      renderSummary();
-
-      alert("Study session সেভ হয়েছে! ভালো কাজ! 🎉");
-    }
-
-    // ---------- DAILY SUMMARY ----------
-    function todayKey() {
-      const now = new Date();
-
-      return now.getFullYear() + "-" +
-        String(now.getMonth() + 1).padStart(2, "0") + "-" +
-        String(now.getDate()).padStart(2, "0");
-    }
-
-    function renderSummary() {
-      const today = todayKey();
-
-      const todaySessions = sessions.filter(
-        session => session.date === today
-      );
-
-      const totalSeconds = todaySessions.reduce(
-        (sum, session) => sum + (Number(session.seconds) || 0),
-        0
-      );
-
-      document.getElementById("todayTime").textContent =
-        formatTime(totalSeconds);
-
-      document.getElementById("todaySessions").textContent =
-        todaySessions.length;
-
-      const list = document.getElementById("sessionList");
-      list.replaceChildren();
-
-      document.getElementById("sessionEmpty").classList.toggle(
-        "hidden",
-        todaySessions.length > 0
-      );
-
-      [...todaySessions].reverse().forEach(session => {
-        const row = document.createElement("div");
-        row.className = "session-item";
-
-        const details = document.createElement("div");
-
-        const name = document.createElement("strong");
-        name.textContent = session.subject;
-
-        const duration = document.createElement("div");
-        duration.className = "small";
-        duration.textContent = formatTime(session.seconds);
-
-        details.append(name, duration);
-        row.appendChild(details);
-        list.appendChild(row);
-      });
-    }
-
-    function clearSessions() {
-      if (!confirm("সব Study Session মুছে ফেলতে চাও?")) return;
-
-      sessions = [];
-      saveStorage(SESSION_KEY, sessions);
-      renderSummary();
-    }
-
-    // ---------- INITIALIZE ----------
-    function initializeApp() {
-      document.getElementById("year").textContent =
-        new Date().getFullYear();
-
-      renderRoutines();
-      updateSubjects();
-      renderSummary();
-      updateTimerUI();
-
-      window.setInterval(() => {
-        if (activeStudy && activeStudy.running) {
-          document.getElementById("timer").textContent =
-            formatTime(elapsedSeconds());
-        }
-      }, 1000);
-    }
-
-    initializeApp();
-  </script>
-</body>
-</html>
+      const s = String(seconds % 60).padS
