@@ -2,469 +2,453 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DailyLife</title>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f4ff;
-      text-align: center;
-      padding: 25px 12px;
-      color: #333;
-    }
-
-    h1, h2 { color: #3347a8; }
-
-    input, select {
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      margin: 5px;
-      max-width: 90%;
-    }
-
-    button {
-      background: #3347a8;
-      color: white;
-      padding: 11px 15px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin: 4px;
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    li, .study-box, .summary-card {
-      background: white;
-      margin: 10px auto;
-      padding: 14px;
-      border-radius: 10px;
-      max-width: 420px;
-      overflow-wrap: anywhere;
-    }
-
-    .done-button, #startButton { background: #218838; }
-    .delete-button, #stopButton { background: #dc3545; }
-
-    button:disabled {
-      background: #888;
-      cursor: default;
-    }
-
-    .tick {
-      color: #218838;
-      font-weight: bold;
-      font-size: 20px;
-    }
-
-    #timer {
-      font-size: 34px;
-      font-weight: bold;
-      color: #3347a8;
-      margin: 15px;
-    }
-
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      max-width: 440px;
-      margin: auto;
-    }
-
-    .summary-card {
-      margin: 0;
-      padding: 15px 8px;
-    }
-
-    .summary-number {
-      font-size: 22px;
-      font-weight: bold;
-      color: #3347a8;
-    }
-
-    .subject-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      text-align: left;
-      border-bottom: 1px solid #eee;
-      padding: 10px 2px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DailyLife</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;padding:18px;
+  font-family:Arial,"Noto Sans Bengali",sans-serif;
+  background:#f1f5f9;color:#1e293b;
+}
+.container{max-width:650px;margin:auto}
+header{text-align:center;margin:10px 0 24px}
+header h1{color:#2563eb;margin-bottom:6px}
+.card{
+  background:white;padding:18px;margin-bottom:18px;
+  border-radius:16px;box-shadow:0 3px 12px #0000000b;
+}
+h2{font-size:20px;margin:0 0 15px}
+input,select{
+  width:100%;padding:12px;border:1px solid #cbd5e1;
+  border-radius:9px;font-size:16px;margin-bottom:10px;
+  background:white;color:#1e293b;
+}
+button{
+  border:0;border-radius:9px;padding:11px 14px;
+  font-size:15px;font-weight:bold;cursor:pointer;
+}
+.primary{background:#2563eb;color:white}
+.green{background:#16a34a;color:white}
+.orange{background:#f59e0b;color:#172033}
+.red{background:#dc2626;color:white}
+.gray{background:#e2e8f0;color:#1e293b}
+.buttons{display:flex;gap:8px;flex-wrap:wrap}
+.buttons button{flex:1}
+#clock{
+  font-size:44px;text-align:center;font-weight:bold;
+  color:#2563eb;margin:18px 0;
+  font-variant-numeric:tabular-nums;
+}
+.status{text-align:center;color:#64748b;margin:8px 0 15px}
+.item{
+  display:flex;align-items:center;gap:9px;
+  padding:12px 0;border-bottom:1px solid #e2e8f0;
+}
+.item:last-child{border-bottom:0}
+.item span{flex:1;overflow-wrap:anywhere}
+.item span.done{text-decoration:line-through;color:#94a3b8}
+.item input[type=checkbox]{width:19px;height:19px;margin:0}
+.item button{padding:8px 10px}
+.stats{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+}
+.stat{
+  background:#eff6ff;padding:15px;border-radius:12px;
+  text-align:center;
+}
+.stat strong{display:block;font-size:23px;color:#2563eb;margin-top:8px}
+.subject-row{
+  display:flex;justify-content:space-between;gap:10px;
+  padding:10px 0;border-bottom:1px solid #e2e8f0;
+}
+.subject-row:last-child{border-bottom:0}
+.small{font-size:13px;color:#64748b;line-height:1.6}
+footer{text-align:center;color:#64748b;font-size:13px;padding:10px}
+@media(max-width:380px){
+  body{padding:10px}
+  .card{padding:14px}
+  #clock{font-size:36px}
+}
+</style>
 </head>
-
 <body>
-  <h1>DailyLife</h1>
-  <p>আমার দৈনন্দিন রুটিন</p>
+<div class="container">
+<header>
+  <h1>🌟 DailyLife</h1>
+  <p>তোমার রুটিন ও পড়াশোনার সঙ্গী</p>
+</header>
 
-  <h2>📋 আমার রুটিন</h2>
-  <input id="routineInput" type="text" placeholder="রুটিন লিখো...">
-  <button id="addButton" type="button">রুটিন যোগ করো</button>
-  <ul id="routineList"></ul>
+<section class="card">
+  <h2>📋 আমার দৈনিক রুটিন</h2>
+  <input id="routineInput" placeholder="যেমন: সকাল ৭টায় ঘুম থেকে ওঠা">
+  <button class="primary" id="addRoutine">+ রুটিন যোগ করো</button>
+  <div id="routineList"></div>
+</section>
 
-  <hr>
+<section class="card">
+  <h2>📚 Study Timer</h2>
+  <label for="subject">কোন বিষয় পড়বে?</label>
+  <select id="subject">
+    <option>ইতিহাস</option>
+    <option>পৌরনীতি</option>
+    <option>অর্থনীতি</option>
+    <option>যুক্তিবিদ্যা</option>
+    <option>আইসিটি</option>
+  </select>
 
-  <h2>📚 পড়াশোনার টাইমার</h2>
-  <div class="study-box">
-    <p>কোন বিষয় পড়বে?</p>
+  <div id="clock">00:00:00</div>
+  <div class="status" id="timerStatus">পড়াশোনা শুরু করার জন্য প্রস্তুত</div>
 
-    <select id="subject">
-      <option value="ইতিহাস">ইতিহাস</option>
-      <option value="পৌরনীতি">পৌরনীতি</option>
-      <option value="অর্থনীতি">অর্থনীতি</option>
-      <option value="যুক্তিবিদ্যা">যুক্তিবিদ্যা</option>
-      <option value="আইসিটি">আইসিটি</option>
-    </select>
-
-    <div id="timer">00:00:00</div>
-    <button id="startButton" type="button">▶ Start</button>
-    <button id="stopButton" type="button" disabled>■ Stop</button>
-    <p id="studyStatus">পড়াশোনা শুরু করতে Start চাপো।</p>
-
-    <h3>পড়ার হিসাব</h3>
-    <ul id="studyList"></ul>
+  <div class="buttons">
+    <button class="green" id="startBtn">▶ Start</button>
+    <button class="orange" id="pauseBtn">⏸ Pause</button>
+    <button class="red" id="stopBtn">⏹ Stop</button>
   </div>
+  <p class="small">
+    Pause করলে সময় থামবে। আবার Start চাপলে পড়া চালিয়ে যেতে পারবে।
+    Stop করলে পড়ার সময় সেভ হবে।
+  </p>
+</section>
 
-  <hr>
-
-  <h2>📊 Study Summary</h2>
-  <p>আজকের পড়াশোনার সারাংশ</p>
-
-  <div class="summary-grid">
-    <div class="summary-card">
-      <p>আজ মোট পড়া</p>
-      <div id="totalTime" class="summary-number">০ মিনিট</div>
-    </div>
-
-    <div class="summary-card">
-      <p>আজকের বিষয়</p>
-      <div id="subjectCount" class="summary-number">০টি</div>
-    </div>
+<section class="card">
+  <h2>📊 আজকের পড়াশোনার হিসাব</h2>
+  <div class="stats">
+    <div class="stat">মোট পড়ার সময়<strong id="totalTime">০ মিনিট</strong></div>
+    <div class="stat">পড়া হয়েছে<strong id="subjectCount">০টি বিষয়</strong></div>
   </div>
+  <h3>বিষয়ভিত্তিক সময়</h3>
+  <div id="subjectSummary"></div>
+</section>
 
-  <div class="study-box">
-    <h3>কোন বিষয়ে কতক্ষণ পড়েছ?</h3>
-    <div id="subjectSummary"></div>
-  </div>
+<footer>DailyLife • প্রতিদিন একটু একটু করে এগিয়ে যাও 💙</footer>
+</div>
 
-  <script>
-    const input = document.getElementById("routineInput");
-    const list = document.getElementById("routineList");
-    const subject = document.getElementById("subject");
-    const timer = document.getElementById("timer");
-    const startButton = document.getElementById("startButton");
-    const stopButton = document.getElementById("stopButton");
-    const studyStatus = document.getElementById("studyStatus");
-    const studyList = document.getElementById("studyList");
+<script>
+const ROUTINE_KEY = "dailyLifeRoutines";
+const SESSION_KEY = "dailyLifeStudySessions";
+const ACTIVE_KEY = "dailyLifeActiveStudy";
 
-    function load(key, fallback) {
-      try {
-        const value = localStorage.getItem(key);
-        return value === null ? fallback : JSON.parse(value);
-      } catch (e) {
-        return fallback;
-      }
-    }
+const subjects = ["ইতিহাস","পৌরনীতি","অর্থনীতি","যুক্তিবিদ্যা","আইসিটি"];
 
-    let routines = load("dailyLifeRoutines", []);
-    if (!Array.isArray(routines)) routines = [];
+function readData(key, fallback) {
+  try {
+    const data = JSON.parse(localStorage.getItem(key));
+    return Array.isArray(fallback) && Array.isArray(data) ? data :
+      (data !== null && data !== undefined ? data : fallback);
+  } catch {
+    return fallback;
+  }
+}
 
-    let sessions = load("dailyLifeStudySessions", []);
-    if (!Array.isArray(sessions)) sessions = [];
+let routines = readData(ROUTINE_KEY, []);
+routines = routines.map((r, i) => {
+  if (typeof r === "string") {
+    return {id: "old-" + i, text: r, done: false};
+  }
+  return {
+    id: r.id ?? ("old-" + i),
+    text: r.text ?? r.title ?? r.name ?? r.routine ?? "",
+    done: Boolean(r.done ?? r.completed)
+  };
+}).filter(r => r.text);
 
-    let activeSession = load("dailyLifeActiveStudy", null);
+let sessions = readData(SESSION_KEY, []);
+let active = null;
 
-    if (
-      !activeSession ||
-      typeof activeSession.subject !== "string" ||
-      !Number.isFinite(activeSession.start)
-    ) {
-      activeSession = null;
-    }
+try {
+  const saved = JSON.parse(localStorage.getItem(ACTIVE_KEY));
+  if (saved && subjects.includes(saved.subject)) {
+    active = {
+      subject: saved.subject,
+      elapsed: Math.max(0, Number(saved.elapsed) || 0),
+      runningSince: saved.runningSince || null,
+      paused: Boolean(saved.paused),
+      startedAt: saved.startedAt || Date.now()
+    };
+  }
+} catch {}
 
-    function save(key, value) {
-      try {
-        localStorage.setItem(key, JSON.stringify(value));
-        return true;
-      } catch (e) {
-        alert("ডেটা সেভ হয়নি। আবার চেষ্টা করো।");
-        return false;
-      }
-    }
+let tickHandle = null;
 
-    function formatTime(seconds) {
-      seconds = Math.max(0, Math.floor(seconds));
-      const h = Math.floor(seconds / 3600);
-      const m = Math.floor((seconds % 3600) / 60);
-      const s = seconds % 60;
+function saveRoutines() {
+  localStorage.setItem(ROUTINE_KEY, JSON.stringify(routines));
+}
 
-      return [h, m, s]
-        .map(n => String(n).padStart(2, "0"))
-        .join(":");
-    }
+function saveSessions() {
+  localStorage.setItem(SESSION_KEY, JSON.stringify(sessions));
+}
 
-    function formatBanglaTime(seconds) {
-      const h = Math.floor(seconds / 3600);
-      const m = Math.floor((seconds % 3600) / 60);
-      const s = seconds % 60;
+function saveActive() {
+  if (active) {
+    localStorage.setItem(ACTIVE_KEY, JSON.stringify(active));
+  } else {
+    localStorage.removeItem(ACTIVE_KEY);
+  }
+}
 
-      if (h > 0) return h + " ঘণ্টা " + m + " মিনিট";
-      if (m > 0) return m + " মিনিট";
-      return s + " সেকেন্ড";
-    }
+function makeId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
 
-    function todayKey() {
-      const d = new Date();
-      return d.getFullYear() + "-" +
-        String(d.getMonth() + 1).padStart(2, "0") + "-" +
-        String(d.getDate()).padStart(2, "0");
-    }
+function renderRoutines() {
+  const list = document.getElementById("routineList");
+  list.replaceChildren();
 
-    function renderRoutines() {
-      list.replaceChildren();
+  if (!routines.length) {
+    list.textContent = "এখনো কোনো রুটিন যোগ করোনি।";
+    return;
+  }
 
-      routines.forEach(function (r, i) {
-        const li = document.createElement("li");
+  routines.forEach(r => {
+    const row = document.createElement("div");
+    row.className = "item";
 
-        const tick = document.createElement("span");
-        tick.className = "tick";
-        tick.textContent = r.done ? "✓ " : "";
-        li.appendChild(tick);
-        li.appendChild(document.createTextNode(r.task + " "));
-
-        const done = document.createElement("button");
-        done.className = "done-button";
-        done.textContent = r.done ? "সম্পন্ন হয়েছে!" : "✓ সম্পন্ন";
-        done.disabled = r.done;
-
-        done.onclick = function () {
-          routines[i].done = true;
-          if (save("dailyLifeRoutines", routines)) renderRoutines();
-        };
-        li.appendChild(done);
-
-        const del = document.createElement("button");
-        del.className = "delete-button";
-        del.textContent = "🗑️ মুছো";
-
-        del.onclick = function () {
-          if (!confirm("এই রুটিনটি মুছে ফেলতে চাও?")) return;
-
-          const removed = routines.splice(i, 1)[0];
-
-          if (save("dailyLifeRoutines", routines)) {
-            renderRoutines();
-          } else {
-            routines.splice(i, 0, removed);
-          }
-        };
-
-        li.appendChild(del);
-        list.appendChild(li);
-      });
-    }
-
-    function addRoutine() {
-      const task = input.value.trim();
-
-      if (!task) {
-        alert("আগে রুটিনের নাম লেখো!");
-        return;
-      }
-
-      routines.push({ task: task, done: false });
-
-      if (save("dailyLifeRoutines", routines)) {
-        input.value = "";
-        renderRoutines();
-      } else {
-        routines.pop();
-      }
-    }
-
-    document.getElementById("addButton").onclick = addRoutine;
-
-    input.addEventListener("keydown", function (e) {
-      if (e.key === "Enter") addRoutine();
+    const check = document.createElement("input");
+    check.type = "checkbox";
+    check.checked = r.done;
+    check.setAttribute("aria-label", "রুটিন সম্পন্ন");
+    check.addEventListener("change", () => {
+      r.done = check.checked;
+      saveRoutines();
+      renderRoutines();
     });
 
-    function renderSessions() {
-      studyList.replaceChildren();
+    const text = document.createElement("span");
+    text.textContent = r.text;
+    if (r.done) text.className = "done";
 
-      if (sessions.length === 0) {
-        const li = document.createElement("li");
-        li.textContent = "এখনো কোনো পড়ার হিসাব নেই।";
-        studyList.appendChild(li);
-        return;
-      }
+    const del = document.createElement("button");
+    del.className = "red";
+    del.textContent = "মুছুন";
+    del.addEventListener("click", () => {
+      routines = routines.filter(x => x.id !== r.id);
+      saveRoutines();
+      renderRoutines();
+    });
 
-      sessions.slice().reverse().forEach(function (s) {
-        const li = document.createElement("li");
-        li.textContent = s.subject + " — " +
-          formatBanglaTime(s.seconds) + " (" + s.date + ")";
-        studyList.appendChild(li);
-      });
-    }
+    row.append(check, text, del);
+    list.appendChild(row);
+  });
+}
 
-    function renderSummary() {
-      const today = todayKey();
+document.getElementById("addRoutine").addEventListener("click", () => {
+  const input = document.getElementById("routineInput");
+  const text = input.value.trim();
+  if (!text) {
+    input.focus();
+    return;
+  }
+  routines.push({id: makeId(), text, done: false});
+  saveRoutines();
+  renderRoutines();
+  input.value = "";
+  input.focus();
+});
 
-      const todaysSessions = sessions.filter(s => s.day === today);
+document.getElementById("routineInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") document.getElementById("addRoutine").click();
+});
 
-      const totals = {};
+function elapsedSeconds() {
+  if (!active) return 0;
+  let seconds = active.elapsed;
+  if (!active.paused && active.runningSince) {
+    seconds += Math.max(0, (Date.now() - active.runningSince) / 1000);
+  }
+  return Math.floor(seconds);
+}
 
-      todaysSessions.forEach(function (s) {
-        if (!Number.isFinite(s.seconds) || s.seconds < 0) return;
+function formatClock(seconds) {
+  seconds = Math.max(0, Math.floor(seconds));
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  return [h,m,s].map(n => String(n).padStart(2,"0")).join(":");
+}
 
-        totals[s.subject] = (totals[s.subject] || 0) + s.seconds;
-      });
+function banglaNumber(n) {
+  return String(n).replace(/\d/g, d => "০১২৩৪৫৬৭৮৯"[Number(d)]);
+}
 
-      let totalSeconds = Object.values(totals).reduce(
-        (sum, seconds) => sum + seconds, 0
-      );
+function refreshTimer() {
+  document.getElementById("clock").textContent =
+    formatClock(elapsedSeconds());
 
-      // চলমান পড়ার সময়ও আজকের সারাংশে দেখানো হবে।
-      if (activeSession) {
-        const startDay = new Date(activeSession.start);
-        if (todayKeyForDate(startDay) === today) {
-          const elapsed = Math.max(
-            0, Math.floor((Date.now() - activeSession.start) / 1000)
-          );
+  const status = document.getElementById("timerStatus");
+  const start = document.getElementById("startBtn");
+  const pause = document.getElementById("pauseBtn");
+  const stop = document.getElementById("stopBtn");
+  const select = document.getElementById("subject");
 
-          totals[activeSession.subject] =
-            (totals[activeSession.subject] || 0) + elapsed;
+  if (!active) {
+    status.textContent = "পড়াশোনা শুরু করার জন্য প্রস্তুত";
+    start.textContent = "▶ Start";
+    pause.disabled = true;
+    stop.disabled = true;
+    select.disabled = false;
+  } else if (active.paused) {
+    status.textContent = active.subject + " — বিরতি চলছে";
+    start.textContent = "▶ Resume";
+    pause.disabled = true;
+    stop.disabled = false;
+    select.disabled = true;
+  } else {
+    status.textContent = active.subject + " — পড়াশোনা চলছে";
+    start.textContent = "▶ Start";
+    pause.disabled = false;
+    stop.disabled = false;
+    select.disabled = true;
+  }
+}
 
-          totalSeconds += elapsed;
-        }
-      }
-
-      document.getElementById("totalTime").textContent =
-        formatBanglaTime(totalSeconds);
-
-      document.getElementById("subjectCount").textContent =
-        Object.keys(totals).length + "টি";
-
-      const summary = document.getElementById("subjectSummary");
-      summary.replaceChildren();
-
-      const names = Object.keys(totals);
-
-      if (names.length === 0) {
-        summary.textContent = "আজ এখনো পড়ার সময় রেকর্ড হয়নি।";
-        return;
-      }
-
-      names.forEach(function (name) {
-        const row = document.createElement("div");
-        row.className = "subject-row";
-
-        const nameSpan = document.createElement("span");
-        nameSpan.textContent = name;
-
-        const timeSpan = document.createElement("strong");
-        timeSpan.textContent = formatBanglaTime(totals[name]);
-
-        row.appendChild(nameSpan);
-        row.appendChild(timeSpan);
-        summary.appendChild(row);
-      });
-    }
-
-    function todayKeyForDate(d) {
-      return d.getFullYear() + "-" +
-        String(d.getMonth() + 1).padStart(2, "0") + "-" +
-        String(d.getDate()).padStart(2, "0");
-    }
-
-    function updateTimer() {
-      if (!activeSession) {
-        timer.textContent = "00:00:00";
-      } else {
-        const elapsed = Math.floor(
-          (Date.now() - activeSession.start) / 1000
-        );
-        timer.textContent = formatTime(elapsed);
-      }
-
-      renderSummary();
-    }
-
-    function renderActive() {
-      startButton.disabled = !!activeSession;
-      stopButton.disabled = !activeSession;
-      subject.disabled = !!activeSession;
-
-      studyStatus.textContent = activeSession
-        ? activeSession.subject + " পড়া চলছে।"
-        : "পড়াশোনা শুরু করতে Start চাপো।";
-
-      updateTimer();
-    }
-
-    startButton.onclick = function () {
-      if (activeSession) return;
-
-      activeSession = {
-        subject: subject.value,
-        start: Date.now()
-      };
-
-      if (!save("dailyLifeActiveStudy", activeSession)) {
-        activeSession = null;
-        return;
-      }
-
-      renderActive();
+function startTimer() {
+  if (!active) {
+    active = {
+      subject: document.getElementById("subject").value,
+      elapsed: 0,
+      runningSince: Date.now(),
+      paused: false,
+      startedAt: Date.now()
     };
+  } else if (active.paused) {
+    active.paused = false;
+    active.runningSince = Date.now();
+  } else {
+    return;
+  }
+  saveActive();
+  refreshTimer();
+  renderSummary();
+}
 
-    stopButton.onclick = function () {
-      if (!activeSession) return;
+function pauseTimer() {
+  if (!active || active.paused) return;
 
-      const end = Date.now();
-      const elapsed = Math.max(
-        0, Math.floor((end - activeSession.start) / 1000)
-      );
+  active.elapsed = elapsedSeconds();
+  active.paused = true;
+  active.runningSince = null;
+  saveActive();
+  refreshTimer();
+  renderSummary();
+}
 
-      const session = {
-        subject: activeSession.subject,
-        seconds: elapsed,
-        date: new Date(activeSession.start).toLocaleDateString("bn-BD"),
-        day: todayKeyForDate(new Date(activeSession.start))
-      };
+function stopTimer() {
+  if (!active) return;
 
-      sessions.push(session);
+  const duration = elapsedSeconds();
+  if (duration > 0) {
+    sessions.push({
+      subject: active.subject,
+      durationSeconds: duration,
+      date: new Date().toLocaleDateString("en-CA"),
+      startedAt: active.startedAt,
+      endedAt: Date.now()
+    });
+    saveSessions();
+  }
 
-      if (!save("dailyLifeStudySessions", sessions)) {
-        sessions.pop();
-        return;
-      }
+  active = null;
+  saveActive();
+  refreshTimer();
+  renderSummary();
+}
 
-      try {
-        localStorage.removeItem("dailyLifeActiveStudy");
-      } catch (e) {
-        alert("চলমান সেশন পরিষ্কার করতে সমস্যা হয়েছে।");
-      }
+document.getElementById("startBtn").addEventListener("click", startTimer);
+document.getElementById("pauseBtn").addEventListener("click", pauseTimer);
+document.getElementById("stopBtn").addEventListener("click", stopTimer);
 
-      activeSession = null;
-      renderActive();
-      renderSessions();
-      renderSummary();
-      studyStatus.textContent = "পড়ার সময় সেভ হয়েছে!";
-    };
+function sessionDuration(s) {
+  if (Number.isFinite(Number(s.durationSeconds))) {
+    return Math.max(0, Number(s.durationSeconds));
+  }
+  if (Number.isFinite(Number(s.seconds))) {
+    return Math.max(0, Number(s.seconds));
+  }
+  if (s.startTime && s.endTime) {
+    const start = new Date(s.startTime).getTime();
+    const end = new Date(s.endTime).getTime();
+    if (end >= start) return (end - start) / 1000;
+  }
+  if (s.startedAt && s.endedAt) {
+    return Math.max(0, (s.endedAt - s.startedAt) / 1000);
+  }
+  return 0;
+}
 
-    renderRoutines();
-    renderSessions();
-    renderActive();
-    renderSummary();
+function localDateKey(date = new Date()) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
 
-    setInterval(updateTimer, 1000);
-  </script>
+function sessionDate(s) {
+  if (s.date) return String(s.date).slice(0, 10);
+  const stamp = s.endedAt || s.endTime || s.startedAt || s.startTime;
+  if (stamp) {
+    const d = new Date(stamp);
+    if (!Number.isNaN(d.getTime())) return localDateKey(d);
+  }
+  return "";
+}
+
+function formatTotal(seconds) {
+  seconds = Math.floor(seconds);
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  if (hours > 0) return banglaNumber(hours) + " ঘণ্টা " + banglaNumber(minutes) + " মিনিট";
+  if (minutes > 0) return banglaNumber(minutes) + " মিনিট";
+  return banglaNumber(seconds) + " সেকেন্ড";
+}
+
+function renderSummary() {
+  const today = localDateKey();
+  const totals = {};
+  subjects.forEach(s => totals[s] = 0);
+
+  sessions.forEach(s => {
+    if (sessionDate(s) === today && totals[s.subject] !== undefined) {
+      totals[s.subject] += sessionDuration(s);
+    }
+  });
+
+  if (active) totals[active.subject] += elapsedSeconds();
+
+  const total = Object.values(totals).reduce((a,b) => a + b, 0);
+  document.getElementById("totalTime").textContent = formatTotal(total);
+
+  const count = subjects.filter(s => totals[s] > 0).length;
+  document.getElementById("subjectCount").textContent =
+    banglaNumber(count) + "টি বিষয়";
+
+  const summary = document.getElementById("subjectSummary");
+  summary.replaceChildren();
+
+  subjects.forEach(subject => {
+    const row = document.createElement("div");
+    row.className = "subject-row";
+
+    const name = document.createElement("span");
+    name.textContent = subject;
+
+    const time = document.createElement("strong");
+    time.textContent = formatTotal(totals[subject]);
+
+    row.append(name, time);
+    summary.appendChild(row);
+  });
+}
+
+function update() {
+  refreshTimer();
+  renderSummary();
+}
+
+renderRoutines();
+update();
+tickHandle = setInterval(update, 1000);
+</script>
 </body>
 </html>
