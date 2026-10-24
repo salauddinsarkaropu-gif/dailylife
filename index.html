@@ -210,7 +210,7 @@
     }
     /* ---- Routine progress bar শেষ ---- */
 
-    /* ---- আজ / সপ্তাহ / মাস বাটন (নতুন) ---- */
+    /* ---- আজ / সপ্তাহ / মাস বাটন ---- */
     .tabs {
       display: flex;
       gap: 8px;
@@ -297,6 +297,13 @@
       padding: 7px 12px;
     }
     /* ---- বিষয়ের লক্ষ্য শেষ ---- */
+
+    /* ---- নতুন বিষয় যোগ করার বাটন (নতুন) ---- */
+    .add-subject-btn {
+      width: 100%;
+      margin-top: 4px;
+    }
+    /* ---- নতুন বিষয় যোগ করার বাটন শেষ ---- */
 
     .delete-btn {
       background: #fee2e2;
@@ -513,6 +520,10 @@
         প্রতিটি বিষয়ের জন্য কত ঘণ্টা পড়তে চাও, ঠিক করে দাও। এখন পর্যন্ত মোট কত পড়েছ, তা এখানে দেখা যাবে।
       </p>
 
+      <button class="add-subject-btn" onclick="addSubject()">
+        ➕ নতুন বিষয় যোগ করো
+      </button>
+
       <div id="targetList"></div>
     </section>
   </main>
@@ -530,6 +541,7 @@
     const ACTIVE_KEY = "dailyLifeActiveStudy";
     const SELECTION_KEY = "dailyLifeSelection";
     const TARGET_KEY = "dailyLifeTargets";
+    const CUSTOM_SUBJECT_KEY = "dailyLifeCustomSubjects";
 
     function readStorage(key, fallback) {
       try {
@@ -552,6 +564,7 @@
     let sessions = readStorage(SESSION_KEY, []);
     let activeStudy = readStorage(ACTIVE_KEY, null);
     let targets = readStorage(TARGET_KEY, {});
+    let customSubjects = readStorage(CUSTOM_SUBJECT_KEY, {});
 
     // কোন রুটিন এখন edit হচ্ছে (না হলে null)
     let editingId = null;
@@ -793,6 +806,17 @@
       ]
     };
 
+    // একটি বিভাগের সব বিষয়: আগে থেকে দেওয়া + নিজে যোগ করা
+    function getSubjects(group) {
+      const base = subjectGroups[group] || [];
+
+      const extra = Array.isArray(customSubjects[group])
+        ? customSubjects[group]
+        : [];
+
+      return base.concat(extra);
+    }
+
     function updateSubjects() {
       const group = document.getElementById("classGroup").value;
       const select = document.getElementById("subject");
@@ -800,16 +824,63 @@
 
       select.replaceChildren();
 
-      subjectGroups[group].forEach(subject => {
+      const subjects = getSubjects(group);
+
+      subjects.forEach(subject => {
         const option = document.createElement("option");
         option.value = subject;
         option.textContent = subject;
         select.appendChild(option);
       });
 
-      if (subjectGroups[group].includes(oldValue)) {
+      if (subjects.includes(oldValue)) {
         select.value = oldValue;
       }
+    }
+
+    // নিজে নতুন বিষয় যোগ করা (এখন বেছে রাখা বিভাগে)
+    function addSubject() {
+      const group = document.getElementById("classGroup").value;
+
+      const answer = prompt(
+        "নতুন বিষয়ের নাম লেখো\n(যেমন: ধর্ম)"
+      );
+
+      // Cancel চাপলে কিছু বদলাবে না
+      if (answer === null) return;
+
+      const name = answer.replace(/\s+/g, " ").trim();
+
+      if (!name) {
+        alert("বিষয়ের নাম খালি রাখা যাবে না।");
+        return;
+      }
+
+      if (name.length > 40) {
+        alert("নাম একটু ছোট করে লেখো (সর্বোচ্চ ৪০ অক্ষর)।");
+        return;
+      }
+
+      const exists = getSubjects(group).some(
+        subject => subject.toLowerCase() === name.toLowerCase()
+      );
+
+      if (exists) {
+        alert("\"" + name + "\" বিষয়টি আগে থেকেই আছে।");
+        return;
+      }
+
+      if (!Array.isArray(customSubjects[group])) {
+        customSubjects[group] = [];
+      }
+
+      customSubjects[group].push(name);
+      saveStorage(CUSTOM_SUBJECT_KEY, customSubjects);
+
+      updateSubjects();
+      document.getElementById("subject").value = name;
+      saveSelection();
+      renderTargets();
     }
 
     // বর্তমান বিভাগ ও বিষয় মনে রাখা
@@ -835,7 +906,7 @@
         document.getElementById("classGroup").value = saved.group;
         updateSubjects();
 
-        if (subjectGroups[saved.group].includes(saved.subject)) {
+        if (getSubjects(saved.group).includes(saved.subject)) {
           document.getElementById("subject").value = saved.subject;
         }
       } else {
@@ -1183,7 +1254,7 @@
       list.replaceChildren();
 
       const group = document.getElementById("classGroup").value;
-      const subjects = subjectGroups[group] || [];
+      const subjects = getSubjects(group);
 
       subjects.forEach(subject => {
         const studied = totalSecondsForSubject(subject);
