@@ -135,6 +135,32 @@
       min-width: 0;
     }
 
+    /* ---- Routine checkbox (নতুন) ---- */
+    input[type="checkbox"] {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      flex-shrink: 0;
+      cursor: pointer;
+      accent-color: var(--green);
+    }
+
+    .routine-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .routine-item.done {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+    }
+
+    .routine-item.done .routine-text strong {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+    /* ---- Routine checkbox শেষ ---- */
+
     .delete-btn {
       background: #fee2e2;
       color: #991b1b;
@@ -388,15 +414,26 @@
         routines.length > 0
       );
 
+      const today = todayKey();
+
       const sorted = [...routines].sort((a, b) =>
         (a.time || "99:99").localeCompare(b.time || "99:99")
       );
 
       sorted.forEach(item => {
+        const isDone = item.doneDate === today;
+
         const row = document.createElement("div");
-        row.className = "routine-item";
+        row.className = "routine-item" + (isDone ? " done" : "");
+
+        const check = document.createElement("input");
+        check.type = "checkbox";
+        check.checked = isDone;
+        check.setAttribute("aria-label", "কাজটি সম্পন্ন চিহ্ন দাও");
+        check.onchange = () => toggleRoutine(item.id);
 
         const details = document.createElement("div");
+        details.className = "routine-text";
         const title = document.createElement("strong");
 
         title.textContent =
@@ -416,9 +453,25 @@
         del.textContent = "মুছো";
         del.onclick = () => deleteRoutine(item.id);
 
-        row.append(details, del);
+        row.append(check, details, del);
         list.appendChild(row);
       });
+    }
+
+    function toggleRoutine(id) {
+      const today = todayKey();
+
+      routines = routines.map(item => {
+        if (item.id !== id) return item;
+
+        return {
+          ...item,
+          doneDate: item.doneDate === today ? null : today
+        };
+      });
+
+      saveStorage(ROUTINE_KEY, routines);
+      renderRoutines();
     }
 
     function deleteRoutine(id) {
