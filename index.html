@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -223,26 +222,26 @@
 <body>
   <header>
     <h1>🌟 DailyLife</h1>
-    <p>তোমার রুটিন, পড়াশোনা ও প্রতিদিনের অগ্রগতি</p>
+    <p>তোমার রুটিন, পড়াশোনা ও প্রতিদিনের অগ্রগতি</p>
   </header>
 
   <main>
     <section class="card">
       <h2>📅 My Daily Routine</h2>
-      <p class="small">প্রতিদিনের কাজের সময় ও নাম লিখে রুটিন তৈরি করো।</p>
+      <p class="small">প্রতিদিনের কাজের সময় ও নাম লিখে রুটিন তৈরি করো।</p>
 
       <label for="routineName">কী কাজ করবে?</label>
-      <input id="routineName" placeholder="যেমন: অর্থনীতি পড়ব">
+      <input id="routineName" placeholder="যেমন: অর্থনীতি পড়ব">
 
       <div class="form-row">
         <div>
-          <label for="routineTime">সময়</label>
+          <label for="routineTime">সময়</label>
           <input id="routineTime" type="time">
         </div>
 
         <div>
           <label for="routineNote">অতিরিক্ত তথ্য (ঐচ্ছিক)</label>
-          <input id="routineNote" placeholder="যেমন: ১ম অধ্যায়">
+          <input id="routineNote" placeholder="যেমন: ১ম অধ্যায়">
         </div>
       </div>
 
@@ -260,16 +259,16 @@
       <label for="classGroup">তোমার বিভাগ</label>
       <select id="classGroup" onchange="updateSubjects()">
         <option value="Science">Science (বিজ্ঞান)</option>
-        <option value="Commerce">Commerce (ব্যবসায় শিক্ষা)</option>
+        <option value="Commerce">Commerce (ব্যবসায় শিক্ষা)</option>
         <option value="Arts" selected>Arts (মানবিক)</option>
       </select>
 
-      <label for="subject">কোন বিষয় পড়বে?</label>
+      <label for="subject">কোন বিষয় পড়বে?</label>
       <select id="subject"></select>
 
       <div id="timer" class="timer">00:00:00</div>
       <p id="timerStatus" class="center small">
-        পড়াশোনা শুরু করতে Start চাপো।
+        পড়াশোনা শুরু করতে Start চাপো।
       </p>
 
       <div class="button-row">
@@ -292,12 +291,12 @@
     </section>
 
     <section class="card">
-      <h2>📊 আজকের পড়াশোনা</h2>
+      <h2>📊 আজকের পড়াশোনা</h2>
 
       <div class="stats">
         <div class="stat">
-          <strong id="todayMinutes">0</strong>
-          <span>মিনিট পড়েছ</span>
+          <strong id="todayTime">00:00:00</strong>
+          <span>সময় পড়েছ</span>
         </div>
 
         <div class="stat">
@@ -310,7 +309,7 @@
       <div id="sessionList"></div>
 
       <p id="sessionEmpty" class="small">
-        আজকের পড়াশোনা এখানে দেখা যাবে।
+        আজকের পড়াশোনা এখানে দেখা যাবে।
       </p>
 
       <div class="button-row">
@@ -346,7 +345,7 @@
       try {
         localStorage.setItem(key, JSON.stringify(value));
       } catch (error) {
-        alert("ডেটা সেভ করা যায়নি। ব্রাউজারের স্টোরেজ পরীক্ষা করো।");
+        alert("ডেটা সেভ করা যায়নি। ব্রাউজারের স্টোরেজ পরীক্ষা করো।");
       }
     }
 
@@ -431,12 +430,12 @@
     // ---------- SUBJECTS ----------
     const subjectGroups = {
       Science: [
-        "পদার্থবিজ্ঞান", "রসায়ন", "জীববিজ্ঞান",
+        "পদার্থবিজ্ঞান", "রসায়ন", "জীববিজ্ঞান",
         "উচ্চতর গণিত", "আইসিটি", "বাংলা", "ইংরেজি"
       ],
 
       Commerce: [
-        "হিসাববিজ্ঞান", "ব্যবসায় সংগঠন ও ব্যবস্থাপনা",
+        "হিসাববিজ্ঞান", "ব্যবসায় সংগঠন ও ব্যবস্থাপনা",
         "ফিন্যান্স ও ব্যাংকিং", "অর্থনীতি", "আইসিটি",
         "বাংলা", "ইংরেজি"
       ],
@@ -513,11 +512,11 @@
       stop.classList.toggle("hidden", !activeStudy);
 
       if (!activeStudy) {
-        status.textContent = "পড়াশোনা শুরু করতে Start চাপো।";
+        status.textContent = "পড়াশোনা শুরু করতে Start চাপো।";
       } else if (activeStudy.running) {
-        status.textContent = "পড়ছ: " + activeStudy.subject;
+        status.textContent = "পড়ছ: " + activeStudy.subject;
       } else {
-        status.textContent = "পড়াশোনা Pause করা আছে।";
+        status.textContent = "পড়াশোনা Pause করা আছে।";
       }
     }
 
@@ -565,7 +564,7 @@
       const date = activeStudy.date || todayKey();
 
       if (seconds < 1) {
-        if (!confirm("সময় প্রায় ০। এই সেশন সেভ করবে?")) return;
+        if (!confirm("সময় প্রায় ০। এই সেশন সেভ করবে?")) return;
       }
 
       sessions.push({
@@ -587,7 +586,7 @@
       updateTimerUI();
       renderSummary();
 
-      alert("Study session সেভ হয়েছে! ভালো কাজ! 🎉");
+      alert("Study session সেভ হয়েছে! ভালো কাজ! 🎉");
     }
 
     // ---------- DAILY SUMMARY ----------
@@ -611,8 +610,8 @@
         0
       );
 
-      document.getElementById("todayMinutes").textContent =
-        Math.floor(totalSeconds / 60);
+      document.getElementById("todayTime").textContent =
+        formatTime(totalSeconds);
 
       document.getElementById("todaySessions").textContent =
         todaySessions.length;
