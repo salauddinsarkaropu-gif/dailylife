@@ -714,4 +714,192 @@
 
       const h = String(Math.floor(seconds / 3600)).padStart(2, "0");
       const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, "0");
-      const s = String(seconds % 60).padS
+      const s = String(seconds % 60).padStart(2, "0");
+
+      return h + ":" + m + ":" + s;
+    }
+
+    function updateTimerUI() {
+      document.getElementById("timer").textContent =
+        formatTime(elapsedSeconds());
+
+      const start = document.getElementById("startBtn");
+      const pause = document.getElementById("pauseBtn");
+      const resume = document.getElementById("resumeBtn");
+      const stop = document.getElementById("stopBtn");
+      const status = document.getElementById("timerStatus");
+
+      start.classList.toggle("hidden", !!activeStudy);
+      pause.classList.toggle(
+        "hidden",
+        !activeStudy || !activeStudy.running
+      );
+      resume.classList.toggle(
+        "hidden",
+        !activeStudy || activeStudy.running
+      );
+      stop.classList.toggle("hidden", !activeStudy);
+
+      if (!activeStudy) {
+        status.textContent = "পড়াশোনা শুরু করতে Start চাপো।";
+      } else if (activeStudy.running) {
+        status.textContent = "পড়ছ: " + activeStudy.subject;
+      } else {
+        status.textContent = "পড়াশোনা Pause করা আছে।";
+      }
+    }
+
+    function startStudy() {
+      if (activeStudy) return;
+
+      activeStudy = {
+        subject: document.getElementById("subject").value,
+        startedAt: Date.now(),
+        elapsed: 0,
+        running: true,
+        date: todayKey()
+      };
+
+      saveStorage(ACTIVE_KEY, activeStudy);
+      updateTimerUI();
+    }
+
+    function pauseStudy() {
+      if (!activeStudy || !activeStudy.running) return;
+
+      activeStudy.elapsed = elapsedSeconds();
+      activeStudy.running = false;
+      activeStudy.startedAt = null;
+
+      saveStorage(ACTIVE_KEY, activeStudy);
+      updateTimerUI();
+    }
+
+    function resumeStudy() {
+      if (!activeStudy || activeStudy.running) return;
+
+      activeStudy.startedAt = Date.now();
+      activeStudy.running = true;
+
+      saveStorage(ACTIVE_KEY, activeStudy);
+      updateTimerUI();
+    }
+
+    function stopStudy() {
+      if (!activeStudy) return;
+
+      const seconds = elapsedSeconds();
+      const subject = activeStudy.subject;
+      const date = activeStudy.date || todayKey();
+
+      if (seconds < 1) {
+        if (!confirm("সময় প্রায় ০। এই সেশন সেভ করবে?")) return;
+      }
+
+      sessions.push({
+        id: Date.now(),
+        subject: subject,
+        seconds: seconds,
+        date: date,
+        endedAt: new Date().toISOString()
+      });
+
+      saveStorage(SESSION_KEY, sessions);
+
+      activeStudy = null;
+
+      try {
+        localStorage.removeItem(ACTIVE_KEY);
+      } catch (error) {}
+
+      updateTimerUI();
+      renderSummary();
+
+      alert("Study session সেভ হয়েছে! ভালো কাজ! 🎉");
+    }
+
+    // ---------- DAILY SUMMARY ----------
+    function todayKey() {
+      const now = new Date();
+
+      return now.getFullYear() + "-" +
+        String(now.getMonth() + 1).padStart(2, "0") + "-" +
+        String(now.getDate()).padStart(2, "0");
+    }
+
+    function renderSummary() {
+      const today = todayKey();
+
+      const todaySessions = sessions.filter(
+        session => session.date === today
+      );
+
+      const totalSeconds = todaySessions.reduce(
+        (sum, session) => sum + (Number(session.seconds) || 0),
+        0
+      );
+
+      document.getElementById("todayTime").textContent =
+        formatTime(totalSeconds);
+
+      document.getElementById("todaySessions").textContent =
+        todaySessions.length;
+
+      const list = document.getElementById("sessionList");
+      list.replaceChildren();
+
+      document.getElementById("sessionEmpty").classList.toggle(
+        "hidden",
+        todaySessions.length > 0
+      );
+
+      [...todaySessions].reverse().forEach(session => {
+        const row = document.createElement("div");
+        row.className = "session-item";
+
+        const details = document.createElement("div");
+
+        const name = document.createElement("strong");
+        name.textContent = session.subject;
+
+        const duration = document.createElement("div");
+        duration.className = "small";
+        duration.textContent = formatTime(session.seconds);
+
+        details.append(name, duration);
+        row.appendChild(details);
+        list.appendChild(row);
+      });
+    }
+
+    function clearSessions() {
+      if (!confirm("সব Study Session মুছে ফেলতে চাও?")) return;
+
+      sessions = [];
+      saveStorage(SESSION_KEY, sessions);
+      renderSummary();
+    }
+
+    // ---------- INITIALIZE ----------
+    function initializeApp() {
+      document.getElementById("year").textContent =
+        new Date().getFullYear();
+
+      renderRoutines();
+      updateSubjects();
+      renderSummary();
+      updateTimerUI();
+      updateRoutineFormUI();
+
+      window.setInterval(() => {
+        if (activeStudy && activeStudy.running) {
+          document.getElementById("timer").textContent =
+            formatTime(elapsedSeconds());
+        }
+      }, 1000);
+    }
+
+    initializeApp();
+  </script>
+</body>
+</html>
