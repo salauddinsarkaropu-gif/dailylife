@@ -135,7 +135,7 @@
       min-width: 0;
     }
 
-    /* ---- Routine checkbox (নতুন) ---- */
+    /* ---- Routine checkbox ---- */
     input[type="checkbox"] {
       width: 24px;
       height: 24px;
@@ -160,6 +160,36 @@
       color: var(--muted);
     }
     /* ---- Routine checkbox শেষ ---- */
+
+    /* ---- Routine progress bar (নতুন) ---- */
+    .progress-box {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 12px;
+      background: var(--light);
+    }
+
+    .progress-text {
+      font-weight: 600;
+      color: var(--dark-blue);
+      margin-bottom: 8px;
+    }
+
+    .progress-track {
+      height: 12px;
+      border-radius: 99px;
+      background: #dbeafe;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      border-radius: 99px;
+      background: var(--blue);
+      transition: width .3s ease;
+    }
+    /* ---- Routine progress bar শেষ ---- */
 
     .delete-btn {
       background: #fee2e2;
@@ -277,6 +307,13 @@
 
       <div id="routineList"></div>
       <p id="routineEmpty" class="small">এখনো কোনো রুটিন যোগ করোনি।</p>
+
+      <div id="routineProgress" class="progress-box hidden">
+        <div id="routineProgressText" class="progress-text"></div>
+        <div class="progress-track">
+          <div id="routineProgressFill" class="progress-fill"></div>
+        </div>
+      </div>
     </section>
 
     <section class="card">
@@ -379,6 +416,12 @@
     let sessions = readStorage(SESSION_KEY, []);
     let activeStudy = readStorage(ACTIVE_KEY, null);
 
+    // ---------- HELPERS ----------
+    function toBn(number) {
+      const digits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
+      return String(number).replace(/\d/g, d => digits[d]);
+    }
+
     // ---------- ROUTINES ----------
     function addRoutine() {
       const name = document.getElementById("routineName").value.trim();
@@ -456,6 +499,31 @@
         row.append(check, details, del);
         list.appendChild(row);
       });
+
+      renderRoutineProgress();
+    }
+
+    function renderRoutineProgress() {
+      const box = document.getElementById("routineProgress");
+      const text = document.getElementById("routineProgressText");
+      const fill = document.getElementById("routineProgressFill");
+
+      const total = routines.length;
+      const today = todayKey();
+
+      const done = routines.filter(
+        item => item.doneDate === today
+      ).length;
+
+      const percent = total > 0 ? Math.round((done / total) * 100) : 0;
+
+      box.classList.toggle("hidden", total === 0);
+
+      text.textContent =
+        "আজ " + toBn(total) + "টির মধ্যে " + toBn(done) +
+        "টি কাজ সম্পন্ন (" + toBn(percent) + "%)";
+
+      fill.style.width = percent + "%";
     }
 
     function toggleRoutine(id) {
