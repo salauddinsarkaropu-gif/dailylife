@@ -65,7 +65,7 @@
       font-size: 21px;
     }
 
-    button, input, select {
+    button, input, select, textarea {
       font: inherit;
     }
 
@@ -93,7 +93,7 @@
       margin: 10px 0 5px;
     }
 
-    input, select {
+    input, select, textarea {
       width: 100%;
       padding: 11px;
       border: 1px solid #cbd5e1;
@@ -102,7 +102,13 @@
       color: var(--text);
     }
 
-    input:focus, select:focus {
+    textarea {
+      display: block;
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    input:focus, select:focus, textarea:focus {
       outline: 2px solid #93c5fd;
       border-color: var(--blue);
     }
@@ -279,6 +285,12 @@
       overflow-wrap: anywhere;
     }
 
+    .custom-tag {
+      font-weight: 400;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
     .target-percent {
       flex-shrink: 0;
       font-weight: 700;
@@ -290,20 +302,46 @@
       font-variant-numeric: tabular-nums;
     }
 
-    .target-btn {
+    .target-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
       margin-top: 10px;
+    }
+
+    .target-btn {
       background: #dbeafe;
       color: var(--dark-blue);
       padding: 7px 12px;
     }
+
+    .rename-btn {
+      background: #fef3c7;
+      color: #92400e;
+      padding: 7px 12px;
+    }
     /* ---- বিষয়ের লক্ষ্য শেষ ---- */
 
-    /* ---- নতুন বিষয় যোগ করার বাটন (নতুন) ---- */
+    /* ---- নতুন বিষয় যোগ করার ফর্ম (নতুন) ---- */
+    .add-form {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .add-form label {
+      margin-top: 0;
+    }
+
+    .add-form .small {
+      margin: 6px 0 0;
+    }
+
     .add-subject-btn {
       width: 100%;
-      margin-top: 4px;
+      margin-top: 8px;
     }
-    /* ---- নতুন বিষয় যোগ করার বাটন শেষ ---- */
+    /* ---- নতুন বিষয় যোগ করার ফর্ম শেষ ---- */
 
     .delete-btn {
       background: #fee2e2;
@@ -517,14 +555,24 @@
     <section class="card">
       <h2>🎯 বিষয়ের লক্ষ্য</h2>
       <p class="small">
-        প্রতিটি বিষয়ের জন্য কত ঘণ্টা পড়তে চাও, ঠিক করে দাও। এখন পর্যন্ত মোট কত পড়েছ, তা এখানে দেখা যাবে।
+        প্রতিটি বিষয়ের জন্য কত ঘণ্টা পড়তে চাও, ঠিক করে দাও। এখন পর্যন্ত মোট কত পড়েছ, তা এখানে দেখা যাবে। নিজের বিষয় যোগ করতে একদম নিচের ঘরে লেখো।
       </p>
 
-      <button class="add-subject-btn" onclick="addSubject()">
-        ➕ নতুন বিষয় যোগ করো
-      </button>
-
       <div id="targetList"></div>
+
+      <div class="add-form">
+        <label for="newSubjects">➕ নতুন বিষয় যোগ করো</label>
+        <textarea
+          id="newSubjects"
+          rows="3"
+          placeholder="একসঙ্গে অনেক বিষয় লিখতে পারো। প্রতিটি আলাদা লাইনে লেখো, অথবা কমা (,) দিয়ে আলাদা করো।"
+        ></textarea>
+        <p id="addGroupHint" class="small"></p>
+
+        <button class="add-subject-btn" onclick="addSubjects()">
+          ➕ বিষয়গুলো যোগ করো
+        </button>
+      </div>
     </section>
   </main>
 
@@ -806,15 +854,29 @@
       ]
     };
 
+    // একটি বিভাগের নিজে যোগ করা বিষয়গুলো
+    function getCustomSubjects(group) {
+      return Array.isArray(customSubjects[group])
+        ? customSubjects[group]
+        : [];
+    }
+
     // একটি বিভাগের সব বিষয়: আগে থেকে দেওয়া + নিজে যোগ করা
     function getSubjects(group) {
       const base = subjectGroups[group] || [];
+      return base.concat(getCustomSubjects(group));
+    }
 
-      const extra = Array.isArray(customSubjects[group])
-        ? customSubjects[group]
-        : [];
+    // নামের বাড়তি ফাঁকা জায়গা সরিয়ে পরিষ্কার করা
+    function cleanSubjectName(text) {
+      return String(text).replace(/\s+/g, " ").trim();
+    }
 
-      return base.concat(extra);
+    // একই নাম অন্য কোনো বিভাগেও আছে কি না
+    function isSubjectInOtherGroup(group, name) {
+      return Object.keys(subjectGroups).some(other =>
+        other !== group && getSubjects(other).includes(name)
+      );
     }
 
     function updateSubjects() {
@@ -838,35 +900,19 @@
       }
     }
 
-    // নিজে নতুন বিষয় যোগ করা (এখন বেছে রাখা বিভাগে)
-    function addSubject() {
+    // একসঙ্গে অনেক নতুন বিষয় যোগ করা (এখন বেছে রাখা বিভাগে)
+    function addSubjects() {
       const group = document.getElementById("classGroup").value;
+      const box = document.getElementById("newSubjects");
 
-      const answer = prompt(
-        "নতুন বিষয়ের নাম লেখো\n(যেমন: ধর্ম)"
-      );
+      // নতুন লাইন বা কমা দিয়ে নামগুলো আলাদা করা
+      const names = box.value
+        .split(/[\n,،;]+/)
+        .map(cleanSubjectName)
+        .filter(name => name !== "");
 
-      // Cancel চাপলে কিছু বদলাবে না
-      if (answer === null) return;
-
-      const name = answer.replace(/\s+/g, " ").trim();
-
-      if (!name) {
-        alert("বিষয়ের নাম খালি রাখা যাবে না।");
-        return;
-      }
-
-      if (name.length > 40) {
-        alert("নাম একটু ছোট করে লেখো (সর্বোচ্চ ৪০ অক্ষর)।");
-        return;
-      }
-
-      const exists = getSubjects(group).some(
-        subject => subject.toLowerCase() === name.toLowerCase()
-      );
-
-      if (exists) {
-        alert("\"" + name + "\" বিষয়টি আগে থেকেই আছে।");
+      if (names.length === 0) {
+        alert("আগে এক বা একাধিক বিষয়ের নাম লেখো।");
         return;
       }
 
@@ -874,12 +920,126 @@
         customSubjects[group] = [];
       }
 
-      customSubjects[group].push(name);
+      const added = [];
+      const skipped = [];
+
+      names.forEach(name => {
+        const exists = getSubjects(group).some(
+          subject => subject.toLowerCase() === name.toLowerCase()
+        );
+
+        if (name.length > 40 || exists) {
+          skipped.push(name);
+          return;
+        }
+
+        customSubjects[group].push(name);
+        added.push(name);
+      });
+
+      if (added.length > 0) {
+        saveStorage(CUSTOM_SUBJECT_KEY, customSubjects);
+
+        updateSubjects();
+        renderTargets();
+
+        box.value = "";
+      }
+
+      let message = "";
+
+      if (added.length > 0) {
+        message +=
+          toBn(added.length) + "টি বিষয় যোগ হয়েছে:\n" + added.join(", ");
+      }
+
+      if (skipped.length > 0) {
+        if (message) message += "\n\n";
+
+        message +=
+          "এগুলো যোগ হয়নি (আগে থেকেই আছে বা নাম ৪০ অক্ষরের বেশি):\n" +
+          skipped.join(", ");
+      }
+
+      alert(message);
+    }
+
+    // নিজে যোগ করা বিষয়ের নাম বদলানো
+    function renameSubject(group, oldName) {
+      const answer = prompt(
+        "\"" + oldName + "\" বিষয়ের সঠিক নাম লেখো:",
+        oldName
+      );
+
+      // Cancel চাপলে কিছু বদলাবে না
+      if (answer === null) return;
+
+      const newName = cleanSubjectName(answer);
+
+      if (!newName) {
+        alert("বিষয়ের নাম খালি রাখা যাবে না।");
+        return;
+      }
+
+      if (newName.length > 40) {
+        alert("নাম একটু ছোট করে লেখো (সর্বোচ্চ ৪০ অক্ষর)।");
+        return;
+      }
+
+      if (newName === oldName) return;
+
+      const exists = getSubjects(group).some(subject =>
+        subject !== oldName &&
+        subject.toLowerCase() === newName.toLowerCase()
+      );
+
+      if (exists) {
+        alert("\"" + newName + "\" নামে বিষয় আগে থেকেই আছে।");
+        return;
+      }
+
+      const wasSelected =
+        document.getElementById("subject").value === oldName;
+
+      // বিষয়ের তালিকায় নাম বদলানো (জায়গা একই থাকবে)
+      customSubjects[group] = getCustomSubjects(group).map(subject =>
+        subject === oldName ? newName : subject
+      );
+
       saveStorage(CUSTOM_SUBJECT_KEY, customSubjects);
 
+      // আগের পড়ার হিসাব ও লক্ষ্য নতুন নামের সঙ্গে নিয়ে যাওয়া
+      // (একই নাম অন্য বিভাগেও থাকলে সেখানকার হিসাব বদলাব না)
+      if (!isSubjectInOtherGroup(group, oldName)) {
+        sessions = sessions.map(session =>
+          session.subject === oldName
+            ? { ...session, subject: newName }
+            : session
+        );
+
+        saveStorage(SESSION_KEY, sessions);
+
+        if (targets[oldName] !== undefined) {
+          targets[newName] = targets[oldName];
+          delete targets[oldName];
+          saveStorage(TARGET_KEY, targets);
+        }
+
+        if (activeStudy && activeStudy.subject === oldName) {
+          activeStudy.subject = newName;
+          saveStorage(ACTIVE_KEY, activeStudy);
+        }
+      }
+
       updateSubjects();
-      document.getElementById("subject").value = name;
+
+      if (wasSelected) {
+        document.getElementById("subject").value = newName;
+      }
+
       saveSelection();
+      updateTimerUI();
+      renderSummary();
       renderTargets();
     }
 
@@ -1253,10 +1413,20 @@
       const list = document.getElementById("targetList");
       list.replaceChildren();
 
-      const group = document.getElementById("classGroup").value;
+      const groupSelect = document.getElementById("classGroup");
+      const group = groupSelect.value;
       const subjects = getSubjects(group);
+      const customList = getCustomSubjects(group);
+
+      // কোন বিভাগে বিষয় যোগ হবে, তা ফর্মের নিচে দেখানো
+      document.getElementById("addGroupHint").textContent =
+        "বিষয়গুলো যোগ হবে: " +
+        groupSelect.options[groupSelect.selectedIndex].textContent +
+        " বিভাগে";
 
       subjects.forEach(subject => {
+        const isCustom = customList.includes(subject);
+
         const studied = totalSecondsForSubject(subject);
         const targetHours = Number(targets[subject]) || 0;
         const targetSeconds = targetHours * 3600;
@@ -1274,6 +1444,13 @@
         const name = document.createElement("span");
         name.className = "target-name";
         name.textContent = subject;
+
+        if (isCustom) {
+          const tag = document.createElement("small");
+          tag.className = "custom-tag";
+          tag.textContent = " (নিজের যোগ করা)";
+          name.appendChild(tag);
+        }
 
         top.appendChild(name);
 
@@ -1311,13 +1488,27 @@
           item.appendChild(track);
         }
 
+        const actions = document.createElement("div");
+        actions.className = "target-actions";
+
         const button = document.createElement("button");
         button.className = "target-btn";
         button.textContent =
           targetSeconds > 0 ? "লক্ষ্য বদলাও" : "লক্ষ্য ঠিক করো";
         button.onclick = () => setTarget(subject);
 
-        item.appendChild(button);
+        actions.appendChild(button);
+
+        if (isCustom) {
+          const rename = document.createElement("button");
+          rename.className = "rename-btn";
+          rename.textContent = "✏️ নাম বদলাও";
+          rename.onclick = () => renameSubject(group, subject);
+
+          actions.appendChild(rename);
+        }
+
+        item.appendChild(actions);
         list.appendChild(item);
       });
     }
