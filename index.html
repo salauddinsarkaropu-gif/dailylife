@@ -210,6 +210,27 @@
     }
     /* ---- Routine progress bar শেষ ---- */
 
+    /* ---- বিষয়ভিত্তিক সময় (নতুন) ---- */
+    .subject-row {
+      margin-top: 12px;
+    }
+
+    .subject-row-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+
+    .subject-row-top span:last-child {
+      flex-shrink: 0;
+      color: var(--dark-blue);
+      font-variant-numeric: tabular-nums;
+    }
+    /* ---- বিষয়ভিত্তিক সময় শেষ ---- */
+
     .delete-btn {
       background: #fee2e2;
       color: #991b1b;
@@ -389,6 +410,12 @@
           <span>টি Study Session</span>
         </div>
       </div>
+
+      <h3>বিষয়ভিত্তিক সময় (আজ)</h3>
+      <div id="subjectTotals"></div>
+      <p id="subjectTotalsEmpty" class="small">
+        আজ এখনো কোনো বিষয় পড়া হয়নি।
+      </p>
 
       <h3>আজকের সেশন</h3>
       <div id="sessionList"></div>
@@ -858,6 +885,61 @@
         String(now.getDate()).padStart(2, "0");
     }
 
+    // আজকের বিষয়ভিত্তিক মোট সময় দেখানো
+    function renderSubjectTotals(todaySessions, totalSeconds) {
+      const box = document.getElementById("subjectTotals");
+      box.replaceChildren();
+
+      const totals = {};
+
+      todaySessions.forEach(session => {
+        const name = session.subject || "অজানা বিষয়";
+        totals[name] =
+          (totals[name] || 0) + (Number(session.seconds) || 0);
+      });
+
+      const entries = Object.entries(totals).sort(
+        (a, b) => b[1] - a[1]
+      );
+
+      document.getElementById("subjectTotalsEmpty").classList.toggle(
+        "hidden",
+        entries.length > 0
+      );
+
+      entries.forEach(([name, seconds]) => {
+        const percent = totalSeconds > 0
+          ? Math.round((seconds / totalSeconds) * 100)
+          : 0;
+
+        const row = document.createElement("div");
+        row.className = "subject-row";
+
+        const top = document.createElement("div");
+        top.className = "subject-row-top";
+
+        const title = document.createElement("span");
+        title.textContent = name;
+
+        const value = document.createElement("span");
+        value.textContent =
+          formatTime(seconds) + " (" + toBn(percent) + "%)";
+
+        top.append(title, value);
+
+        const track = document.createElement("div");
+        track.className = "progress-track";
+
+        const fill = document.createElement("div");
+        fill.className = "progress-fill";
+        fill.style.width = percent + "%";
+
+        track.appendChild(fill);
+        row.append(top, track);
+        box.appendChild(row);
+      });
+    }
+
     function renderSummary() {
       const today = todayKey();
 
@@ -875,6 +957,8 @@
 
       document.getElementById("todaySessions").textContent =
         todaySessions.length;
+
+      renderSubjectTotals(todaySessions, totalSeconds);
 
       const list = document.getElementById("sessionList");
       list.replaceChildren();
