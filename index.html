@@ -32,7 +32,7 @@
     button {
       background: #3347a8;
       color: white;
-      padding: 12px 20px;
+      padding: 12px 16px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
@@ -60,6 +60,10 @@
     .done-button:disabled {
       background: #6c757d;
       cursor: default;
+    }
+
+    .delete-button {
+      background: #dc3545;
     }
 
     .tick {
@@ -118,8 +122,10 @@
           "dailyLifeRoutines",
           JSON.stringify(routines)
         );
+        return true;
       } catch (error) {
-        alert("রুটিন সেভ হয়নি। ব্রাউজারের স্টোরেজ পরীক্ষা করো।");
+        alert("সেভ করা যায়নি। আবার চেষ্টা করো।");
+        return false;
       }
     }
 
@@ -132,7 +138,6 @@
         const tick = document.createElement("span");
         tick.className = "tick";
         tick.textContent = routine.done ? "✓" : "";
-        tick.setAttribute("aria-label", "সম্পন্ন");
         item.appendChild(tick);
 
         const taskText = document.createElement("span");
@@ -149,11 +154,35 @@
 
         doneButton.addEventListener("click", function () {
           routines[index].done = true;
-          saveRoutines();
-          renderRoutines();
+          if (saveRoutines()) {
+            renderRoutines();
+          }
         });
 
         item.appendChild(doneButton);
+
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.className = "delete-button";
+        deleteButton.textContent = "🗑️ মুছো";
+
+        deleteButton.addEventListener("click", function () {
+          const confirmed = confirm(
+            "এই রুটিনটি কি মুছে ফেলতে চাও?"
+          );
+
+          if (!confirmed) return;
+
+          const removed = routines.splice(index, 1)[0];
+
+          if (saveRoutines()) {
+            renderRoutines();
+          } else {
+            routines.splice(index, 0, removed);
+          }
+        });
+
+        item.appendChild(deleteButton);
         list.appendChild(item);
       });
     }
@@ -172,10 +201,13 @@
         done: false
       });
 
-      saveRoutines();
-      renderRoutines();
+      if (saveRoutines()) {
+        renderRoutines();
+        input.value = "";
+      } else {
+        routines.pop();
+      }
 
-      input.value = "";
       input.focus();
     }
 
