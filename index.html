@@ -53,13 +53,20 @@
       overflow-wrap: anywhere;
     }
 
-    .completed {
-      text-decoration: line-through;
-      color: green;
-    }
-
     .done-button {
       background: #218838;
+    }
+
+    .done-button:disabled {
+      background: #6c757d;
+      cursor: default;
+    }
+
+    .tick {
+      color: #218838;
+      font-weight: bold;
+      font-size: 20px;
+      margin-right: 5px;
     }
   </style>
 </head>
@@ -95,8 +102,14 @@
       }
 
       const item = document.createElement("li");
-      const taskText = document.createElement("span");
 
+      const tick = document.createElement("span");
+      tick.className = "tick";
+      tick.textContent = "";
+      tick.setAttribute("aria-label", "সম্পন্ন");
+      item.appendChild(tick);
+
+      const taskText = document.createElement("span");
       taskText.textContent = task + " ";
       item.appendChild(taskText);
 
@@ -106,7 +119,7 @@
       doneButton.className = "done-button";
 
       doneButton.addEventListener("click", function () {
-        taskText.classList.add("completed");
+        tick.textContent = "✓";
         doneButton.textContent = "সম্পন্ন হয়েছে!";
         doneButton.disabled = true;
       });
