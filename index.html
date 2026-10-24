@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DailyLife</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -35,6 +36,7 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      margin: 4px;
     }
 
     ul {
@@ -50,15 +52,31 @@
       max-width: 400px;
       overflow-wrap: anywhere;
     }
+
+    .completed {
+      text-decoration: line-through;
+      color: green;
+    }
+
+    .done-button {
+      background: #218838;
+    }
   </style>
 </head>
+
 <body>
   <h1>DailyLife</h1>
   <p>আমার দৈনন্দিন রুটিন</p>
 
-  <input id="routineInput" type="text"
-         placeholder="রুটিন লিখো...">
-  <button id="addButton" type="button">রুটিন যোগ করো</button>
+  <input
+    id="routineInput"
+    type="text"
+    placeholder="রুটিন লিখো..."
+  >
+
+  <button id="addButton" type="button">
+    রুটিন যোগ করো
+  </button>
 
   <ul id="routineList"></ul>
 
@@ -67,7 +85,7 @@
     const button = document.getElementById("addButton");
     const list = document.getElementById("routineList");
 
-    button.addEventListener("click", function () {
+    function addRoutine() {
       const task = input.value.trim();
 
       if (task === "") {
@@ -77,11 +95,35 @@
       }
 
       const item = document.createElement("li");
-      item.textContent = task;
+      const taskText = document.createElement("span");
+
+      taskText.textContent = task + " ";
+      item.appendChild(taskText);
+
+      const doneButton = document.createElement("button");
+      doneButton.textContent = "✓ সম্পন্ন";
+      doneButton.type = "button";
+      doneButton.className = "done-button";
+
+      doneButton.addEventListener("click", function () {
+        taskText.classList.add("completed");
+        doneButton.textContent = "সম্পন্ন হয়েছে!";
+        doneButton.disabled = true;
+      });
+
+      item.appendChild(doneButton);
       list.appendChild(item);
 
       input.value = "";
       input.focus();
+    }
+
+    button.addEventListener("click", addRoutine);
+
+    input.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        addRoutine();
+      }
     });
   </script>
 </body>
