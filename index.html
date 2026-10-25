@@ -322,7 +322,7 @@
     }
     /* ---- বিষয়ের লক্ষ্য শেষ ---- */
 
-    /* ---- নতুন বিষয় যোগ করার ফর্ম (নতুন) ---- */
+    /* ---- নতুন বিষয় যোগ করার ফর্ম ---- */
     .add-form {
       margin-top: 18px;
       padding-top: 14px;
@@ -1043,6 +1043,44 @@
       renderTargets();
     }
 
+    // নিজে যোগ করা বিষয় মুছে ফেলা (আগের পড়ার হিসাব মুছবে না)
+    function deleteSubject(group, name) {
+      // ওই বিষয়ে timer চলছে বা pause করা থাকলে মোছা যাবে না
+      if (activeStudy && activeStudy.subject === name) {
+        alert(
+          "\"" + name + "\" বিষয়ে এখন timer চলছে বা Pause করা আছে।\n" +
+          "আগে Stop & Save করো, তারপর মুছো।"
+        );
+        return;
+      }
+
+      const message =
+        "\"" + name + "\" বিষয়টি মুছে ফেলবে?\n\n" +
+        "• বিষয়টি তালিকা থেকে সরে যাবে\n" +
+        "• এর লক্ষ্যও মুছে যাবে\n" +
+        "• আগের পড়ার সময়ের হিসাব মুছবে না";
+
+      if (!confirm(message)) return;
+
+      customSubjects[group] = getCustomSubjects(group).filter(
+        subject => subject !== name
+      );
+
+      saveStorage(CUSTOM_SUBJECT_KEY, customSubjects);
+
+      // একই নামের বিষয় অন্য বিভাগে থাকলে সেটার লক্ষ্য রেখে দাও
+      if (!isSubjectInOtherGroup(group, name) && targets[name] !== undefined) {
+        delete targets[name];
+        saveStorage(TARGET_KEY, targets);
+      }
+
+      // মোছা বিষয় বাছা থাকলে তালিকার প্রথম বিষয়ে সরে যাবে
+      updateSubjects();
+      saveSelection();
+      renderSummary();
+      renderTargets();
+    }
+
     // বর্তমান বিভাগ ও বিষয় মনে রাখা
     function saveSelection() {
       saveStorage(SELECTION_KEY, {
@@ -1505,7 +1543,12 @@
           rename.textContent = "✏️ নাম বদলাও";
           rename.onclick = () => renameSubject(group, subject);
 
-          actions.appendChild(rename);
+          const remove = document.createElement("button");
+          remove.className = "delete-btn";
+          remove.textContent = "🗑 মুছো";
+          remove.onclick = () => deleteSubject(group, subject);
+
+          actions.append(rename, remove);
         }
 
         item.appendChild(actions);
