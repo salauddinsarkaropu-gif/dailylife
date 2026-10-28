@@ -525,7 +525,7 @@
     }
     /* ---- সেটিংস পাতা ও সুইচ শেষ ---- */
 
-    /* ---- ভাষা বাছাই (নতুন) ---- */
+    /* ---- ভাষা বাছাই ---- */
     .lang-select {
       width: auto;
       flex-shrink: 0;
@@ -799,33 +799,41 @@
     </section>
 
     <section class="card" data-page="routine">
-      <h2>📅 My Daily Routine</h2>
-      <p class="small">প্রতিদিনের কাজের সময় ও নাম লিখে রুটিন তৈরি করো।</p>
+      <h2 data-i18n="routineTitle">📅 My Daily Routine</h2>
+      <p class="small" data-i18n="routineHint">প্রতিদিনের কাজের সময় ও নাম লিখে রুটিন তৈরি করো।</p>
 
-      <label for="routineName">কী কাজ করবে?</label>
-      <input id="routineName" placeholder="যেমন: অর্থনীতি পড়ব">
+      <label for="routineName" data-i18n="routineName">কী কাজ করবে?</label>
+      <input
+        id="routineName"
+        placeholder="যেমন: অর্থনীতি পড়ব"
+        data-i18n-placeholder="routineNamePh"
+      >
 
       <div class="form-row">
         <div>
-          <label for="routineTime">সময়</label>
+          <label for="routineTime" data-i18n="routineTime">সময়</label>
           <input id="routineTime" type="time">
         </div>
 
         <div>
-          <label for="routineNote">অতিরিক্ত তথ্য (ঐচ্ছিক)</label>
-          <input id="routineNote" placeholder="যেমন: ১ম অধ্যায়">
+          <label for="routineNote" data-i18n="routineNote">অতিরিক্ত তথ্য (ঐচ্ছিক)</label>
+          <input
+            id="routineNote"
+            placeholder="যেমন: ১ম অধ্যায়"
+            data-i18n-placeholder="routineNotePh"
+          >
         </div>
       </div>
 
       <div class="button-row">
         <button id="routineSaveBtn" onclick="saveRoutine()">➕ রুটিন যোগ করো</button>
-        <button id="routineCancelBtn" class="secondary-btn hidden" onclick="cancelEdit()">
+        <button id="routineCancelBtn" class="secondary-btn hidden" onclick="cancelEdit()" data-i18n="cancel">
           বাতিল
         </button>
       </div>
 
       <div id="routineList"></div>
-      <p id="routineEmpty" class="small">এখনো কোনো রুটিন যোগ করোনি।</p>
+      <p id="routineEmpty" class="small" data-i18n="routineEmpty">এখনো কোনো রুটিন যোগ করোনি।</p>
 
       <div id="routineProgress" class="progress-box hidden">
         <div id="routineProgressText" class="progress-text"></div>
@@ -836,16 +844,16 @@
     </section>
 
     <section class="card" data-page="study">
-      <h2>📚 Study Timer</h2>
+      <h2 data-i18n="studyTitle">📚 Study Timer</h2>
 
-      <label for="classGroup">তোমার বিভাগ</label>
+      <label for="classGroup" data-i18n="groupLabel">তোমার বিভাগ</label>
       <select id="classGroup" onchange="onGroupChange()">
-        <option value="Science">Science (বিজ্ঞান)</option>
-        <option value="Commerce">Commerce (ব্যবসায় শিক্ষা)</option>
-        <option value="Arts" selected>Arts (মানবিক)</option>
+        <option value="Science" data-i18n="groupScience">Science (বিজ্ঞান)</option>
+        <option value="Commerce" data-i18n="groupCommerce">Commerce (ব্যবসায় শিক্ষা)</option>
+        <option value="Arts" data-i18n="groupArts" selected>Arts (মানবিক)</option>
       </select>
 
-      <label for="subject">কোন বিষয় পড়বে?</label>
+      <label for="subject" data-i18n="subjectLabel">কোন বিষয় পড়বে?</label>
       <select id="subject" onchange="saveSelection()"></select>
 
       <div id="timer" class="timer">00:00:00</div>
@@ -873,26 +881,26 @@
     </section>
 
     <section class="card" data-page="study">
-      <h2>📊 আজকের পড়াশোনা</h2>
+      <h2 data-i18n="todayTitle">📊 আজকের পড়াশোনা</h2>
 
       <div class="stats">
         <div class="stat">
           <strong id="todayTime">00:00:00</strong>
-          <span>সময় পড়েছ</span>
+          <span data-i18n="statStudied">সময় পড়েছ</span>
         </div>
 
         <div class="stat">
           <strong id="todaySessions">0</strong>
-          <span>টি Study Session</span>
+          <span data-i18n="statSessions">টি Study Session</span>
         </div>
       </div>
 
-      <h3>বিষয়ভিত্তিক সময়</h3>
+      <h3 data-i18n="bySubject">বিষয়ভিত্তিক সময়</h3>
 
       <div class="tabs">
-        <button id="tab-today" class="tab-btn active" onclick="setPeriod('today')">আজ</button>
-        <button id="tab-week" class="tab-btn" onclick="setPeriod('week')">এই সপ্তাহ</button>
-        <button id="tab-month" class="tab-btn" onclick="setPeriod('month')">এই মাস</button>
+        <button id="tab-today" class="tab-btn active" onclick="setPeriod('today')" data-i18n="tabToday">আজ</button>
+        <button id="tab-week" class="tab-btn" onclick="setPeriod('week')" data-i18n="tabWeek">এই সপ্তাহ</button>
+        <button id="tab-month" class="tab-btn" onclick="setPeriod('month')" data-i18n="tabMonth">এই মাস</button>
       </div>
 
       <p id="periodTotal" class="small hidden"></p>
@@ -902,38 +910,39 @@
         আজ এখনো কোনো বিষয় পড়া হয়নি।
       </p>
 
-      <h3>আজকের সেশন</h3>
+      <h3 data-i18n="sessionsTitle">আজকের সেশন</h3>
       <div id="sessionList"></div>
 
-      <p id="sessionEmpty" class="small">
+      <p id="sessionEmpty" class="small" data-i18n="sessionEmpty">
         আজকের পড়াশোনা এখানে দেখা যাবে।
       </p>
 
       <div class="button-row">
-        <button class="secondary-btn" onclick="clearSessions()">
+        <button class="secondary-btn" onclick="clearSessions()" data-i18n="clearSessions">
           সেশনের ইতিহাস মুছো
         </button>
       </div>
     </section>
 
     <section class="card" data-page="target">
-      <h2>🎯 বিষয়ের লক্ষ্য</h2>
-      <p class="small">
+      <h2 data-i18n="targetTitle">🎯 বিষয়ের লক্ষ্য</h2>
+      <p class="small" data-i18n="targetHint">
         প্রতিটি বিষয়ের জন্য কত ঘণ্টা পড়তে চাও, ঠিক করে দাও। এখন পর্যন্ত মোট কত পড়েছ, তা এখানে দেখা যাবে। নিজের বিষয় যোগ করতে একদম নিচের ঘরে লেখো।
       </p>
 
       <div id="targetList"></div>
 
       <div class="add-form">
-        <label for="newSubjects">➕ নতুন বিষয় যোগ করো</label>
+        <label for="newSubjects" data-i18n="addSubjectsLabel">➕ নতুন বিষয় যোগ করো</label>
         <textarea
           id="newSubjects"
           rows="3"
           placeholder="একসঙ্গে অনেক বিষয় লিখতে পারো। প্রতিটি আলাদা লাইনে লেখো, অথবা কমা (,) দিয়ে আলাদা করো।"
+          data-i18n-placeholder="addSubjectsPh"
         ></textarea>
         <p id="addGroupHint" class="small"></p>
 
-        <button class="add-subject-btn" onclick="addSubjects()">
+        <button class="add-subject-btn" onclick="addSubjects()" data-i18n="addSubjectsBtn">
           ➕ বিষয়গুলো যোগ করো
         </button>
       </div>
@@ -1014,7 +1023,7 @@
       </div>
 
       <p id="langNote" class="small" data-i18n="langNote">
-        বর্তমানে মেনু, হোম ও সেটিংস পাতা অনুবাদ হয়েছে। বাকি পাতা পরের ধাপে আসবে।
+        ভাষা বদলালে ওয়েবসাইটের সব লেখা বদলে যাবে। তোমার নিজের লেখা নাম, রুটিন ও বিষয় যেমন আছে তেমনই থাকবে।
       </p>
     </section>
   </main>
@@ -1087,7 +1096,7 @@
       try {
         localStorage.setItem(key, JSON.stringify(value));
       } catch (error) {
-        alert("ডেটা সেভ করা যায়নি। ব্রাউজারের স্টোরেজ পরীক্ষা করো।");
+        alert(t("storageError"));
       }
     }
 
@@ -1118,6 +1127,7 @@
     // লেখার তালিকা: প্রতিটি চাবির বাংলা ও ইংরেজি রূপ
     const TEXT = {
       bn: {
+        // সাধারণ
         headerTagline: "তোমার রুটিন, পড়াশোনা ও প্রতিদিনের অগ্রগতি",
         navHome: "হোম",
         navRoutine: "রুটিন",
@@ -1126,14 +1136,16 @@
         navSettings: "সেটিংস",
         navAria: "মূল মেনু",
         footerText: "তোমার প্রতিদিনের ছোট ছোট অগ্রগতি গুরুত্বপূর্ণ",
+        storageError: "ডেটা সেভ করা যায়নি। ব্রাউজারের স্টোরেজ পরীক্ষা করো।",
+        cancel: "বাতিল",
 
+        // হোম
         greetNight: "শুভ রাত্রি",
         greetMorning: "শুভ সকাল",
         greetNoon: "শুভ দুপুর",
         greetAfternoon: "শুভ বিকেল",
         greetEvening: "শুভ সন্ধ্যা",
         todayPrefix: "আজ, ",
-
         homeProgressTitle: "আজকের অগ্রগতি",
         homeMsgNone: "রুটিনে কাজ যোগ করলে অগ্রগতি এখানে দেখা যাবে।",
         homeMsgAll: "আজকের সব কাজ শেষ! দারুণ! 🎉",
@@ -1151,6 +1163,81 @@
         viewAll: "সব রুটিন দেখো →",
         moreRoutines: "আরও {n}টি রুটিন আছে।",
 
+        // রুটিন
+        routineTitle: "📅 My Daily Routine",
+        routineHint: "প্রতিদিনের কাজের সময় ও নাম লিখে রুটিন তৈরি করো।",
+        routineName: "কী কাজ করবে?",
+        routineNamePh: "যেমন: অর্থনীতি পড়ব",
+        routineTime: "সময়",
+        routineNote: "অতিরিক্ত তথ্য (ঐচ্ছিক)",
+        routineNotePh: "যেমন: ১ম অধ্যায়",
+        routineAdd: "➕ রুটিন যোগ করো",
+        routineSaveChanges: "✅ পরিবর্তন সেভ করো",
+        routineEmpty: "এখনো কোনো রুটিন যোগ করোনি।",
+        routineEdit: "সম্পাদনা",
+        routineDelete: "মুছো",
+        routineCheckAria: "কাজটি সম্পন্ন চিহ্ন দাও",
+        routineProgressText: "আজ {total}টির মধ্যে {done}টি কাজ সম্পন্ন ({percent}%)",
+        routineNeedName: "আগে কাজের নাম লেখো।",
+
+        // পড়াশোনা
+        studyTitle: "📚 Study Timer",
+        groupLabel: "তোমার বিভাগ",
+        groupScience: "Science (বিজ্ঞান)",
+        groupCommerce: "Commerce (ব্যবসায় শিক্ষা)",
+        groupArts: "Arts (মানবিক)",
+        subjectLabel: "কোন বিষয় পড়বে?",
+        timerIdle: "পড়াশোনা শুরু করতে Start চাপো।",
+        timerRunning: "পড়ছ: {subject}",
+        timerPaused: "পড়াশোনা Pause করা আছে।",
+        zeroConfirm: "সময় প্রায় ০। এই সেশন সেভ করবে?",
+        sessionSaved: "Study session সেভ হয়েছে! ভালো কাজ! 🎉",
+        todayTitle: "📊 আজকের পড়াশোনা",
+        statStudied: "সময় পড়েছ",
+        statSessions: "টি Study Session",
+        bySubject: "বিষয়ভিত্তিক সময়",
+        tabToday: "আজ",
+        tabWeek: "এই সপ্তাহ",
+        tabMonth: "এই মাস",
+        periodTotalToday: "আজ মোট: ",
+        periodTotalWeek: "এই সপ্তাহে মোট: ",
+        periodTotalMonth: "এই মাসে মোট: ",
+        periodEmptyToday: "আজ এখনো কোনো বিষয় পড়া হয়নি।",
+        periodEmptyWeek: "এই সপ্তাহে এখনো কোনো বিষয় পড়া হয়নি।",
+        periodEmptyMonth: "এই মাসে এখনো কোনো বিষয় পড়া হয়নি।",
+        unknownSubject: "অজানা বিষয়",
+        sessionsTitle: "আজকের সেশন",
+        sessionEmpty: "আজকের পড়াশোনা এখানে দেখা যাবে।",
+        clearSessions: "সেশনের ইতিহাস মুছো",
+        clearConfirm: "সব Study Session মুছে ফেলতে চাও?",
+
+        // লক্ষ্য
+        targetTitle: "🎯 বিষয়ের লক্ষ্য",
+        targetHint: "প্রতিটি বিষয়ের জন্য কত ঘণ্টা পড়তে চাও, ঠিক করে দাও। এখন পর্যন্ত মোট কত পড়েছ, তা এখানে দেখা যাবে। নিজের বিষয় যোগ করতে একদম নিচের ঘরে লেখো।",
+        addSubjectsLabel: "➕ নতুন বিষয় যোগ করো",
+        addSubjectsPh: "একসঙ্গে অনেক বিষয় লিখতে পারো। প্রতিটি আলাদা লাইনে লেখো, অথবা কমা (,) দিয়ে আলাদা করো।",
+        addGroupHint: "বিষয়গুলো যোগ হবে: {group} বিভাগে",
+        addSubjectsBtn: "➕ বিষয়গুলো যোগ করো",
+        customTag: " (নিজের যোগ করা)",
+        targetStudied: "মোট পড়েছ: {time} · লক্ষ্য: {hours} ঘণ্টা",
+        targetNone: "মোট পড়েছ: {time} · লক্ষ্য ঠিক করা নেই",
+        goalChange: "লক্ষ্য বদলাও",
+        goalSet: "লক্ষ্য ঠিক করো",
+        renameBtn: "✏️ নাম বদলাও",
+        removeBtn: "🗑 মুছো",
+        promptGoal: "\"{subject}\" বিষয়ে মোট কত ঘণ্টা পড়তে চাও?\n(সংখ্যা লেখো, যেমন 10। লক্ষ্য মুছতে ০ লেখো।)",
+        goalInvalid: "সঠিক সংখ্যা লেখো, যেমন 10।",
+        addNeedName: "আগে এক বা একাধিক বিষয়ের নাম লেখো।",
+        addedMsg: "{n}টি বিষয় যোগ হয়েছে:\n{list}",
+        skippedMsg: "এগুলো যোগ হয়নি (আগে থেকেই আছে বা নাম ৪০ অক্ষরের বেশি):\n{list}",
+        renamePrompt: "\"{name}\" বিষয়ের সঠিক নাম লেখো:",
+        renameEmpty: "বিষয়ের নাম খালি রাখা যাবে না।",
+        nameTooLong: "নাম একটু ছোট করে লেখো (সর্বোচ্চ ৪০ অক্ষর)।",
+        renameExists: "\"{name}\" নামে বিষয় আগে থেকেই আছে।",
+        deleteBusy: "\"{name}\" বিষয়ে এখন timer চলছে বা Pause করা আছে।\nআগে Stop & Save করো, তারপর মুছো।",
+        deleteConfirm: "\"{name}\" বিষয়টি মুছে ফেলবে?\n\n• বিষয়টি তালিকা থেকে সরে যাবে\n• এর লক্ষ্যও মুছে যাবে\n• আগের পড়ার সময়ের হিসাব মুছবে না",
+
+        // প্রোফাইল
         profileTitle: "👤 প্রোফাইল",
         profileHint: "তোমার তথ্য শুধু এই ফোনের ব্রাউজারে সেভ থাকে।",
         profileName: "নাম",
@@ -1162,14 +1249,16 @@
         profileSave: "💾 প্রোফাইল সেভ করো",
         profileSaved: "✅ প্রোফাইল সেভ হয়েছে।",
 
+        // সেটিংস
         settingsTitle: "⚙️ সেটিংস",
         darkDesc: "রাতে পড়ার সময় চোখের আরামের জন্য গাঢ় রঙ।",
         darkAria: "Dark Mode চালু বা বন্ধ করো",
         langDesc: "ওয়েবসাইটের লেখা কোন ভাষায় দেখবে, তা বেছে নাও।",
-        langNote: "বর্তমানে মেনু, হোম ও সেটিংস পাতা অনুবাদ হয়েছে। বাকি পাতা পরের ধাপে আসবে।"
+        langNote: "ভাষা বদলালে ওয়েবসাইটের সব লেখা বদলে যাবে। তোমার নিজের লেখা নাম, রুটিন ও বিষয় যেমন আছে তেমনই থাকবে।"
       },
 
       en: {
+        // General
         headerTagline: "Your routine, studies and daily progress",
         navHome: "Home",
         navRoutine: "Routine",
@@ -1178,14 +1267,16 @@
         navSettings: "Settings",
         navAria: "Main menu",
         footerText: "Your small steps every day matter",
+        storageError: "Could not save data. Please check your browser storage.",
+        cancel: "Cancel",
 
+        // Home
         greetNight: "Good night",
         greetMorning: "Good morning",
         greetNoon: "Good afternoon",
         greetAfternoon: "Good afternoon",
         greetEvening: "Good evening",
         todayPrefix: "Today, ",
-
         homeProgressTitle: "Today's progress",
         homeMsgNone: "Add tasks to your routine and your progress will show here.",
         homeMsgAll: "All of today's tasks are done! Great job! 🎉",
@@ -1203,6 +1294,81 @@
         viewAll: "View all routines →",
         moreRoutines: "{n} more routines.",
 
+        // Routine
+        routineTitle: "📅 My Daily Routine",
+        routineHint: "Create your routine by writing the time and name of each daily task.",
+        routineName: "What will you do?",
+        routineNamePh: "e.g. Study economics",
+        routineTime: "Time",
+        routineNote: "Extra details (optional)",
+        routineNotePh: "e.g. Chapter 1",
+        routineAdd: "➕ Add routine",
+        routineSaveChanges: "✅ Save changes",
+        routineEmpty: "You haven't added any routine yet.",
+        routineEdit: "Edit",
+        routineDelete: "Delete",
+        routineCheckAria: "Mark task as done",
+        routineProgressText: "{done} of {total} tasks done today ({percent}%)",
+        routineNeedName: "Please write the task name first.",
+
+        // Study
+        studyTitle: "📚 Study Timer",
+        groupLabel: "Your group",
+        groupScience: "Science",
+        groupCommerce: "Commerce",
+        groupArts: "Arts (Humanities)",
+        subjectLabel: "Which subject will you study?",
+        timerIdle: "Press Start to begin studying.",
+        timerRunning: "Studying: {subject}",
+        timerPaused: "Study is paused.",
+        zeroConfirm: "The time is almost 0. Save this session?",
+        sessionSaved: "Study session saved! Good job! 🎉",
+        todayTitle: "📊 Today's study",
+        statStudied: "Time studied",
+        statSessions: "Study sessions",
+        bySubject: "Time by subject",
+        tabToday: "Today",
+        tabWeek: "This week",
+        tabMonth: "This month",
+        periodTotalToday: "Total today: ",
+        periodTotalWeek: "Total this week: ",
+        periodTotalMonth: "Total this month: ",
+        periodEmptyToday: "No subject studied yet today.",
+        periodEmptyWeek: "No subject studied yet this week.",
+        periodEmptyMonth: "No subject studied yet this month.",
+        unknownSubject: "Unknown subject",
+        sessionsTitle: "Today's sessions",
+        sessionEmpty: "Today's study will appear here.",
+        clearSessions: "Clear session history",
+        clearConfirm: "Delete all study sessions?",
+
+        // Goals
+        targetTitle: "🎯 Subject goals",
+        targetHint: "Set how many hours you want to study each subject. Your total study time so far is shown here. To add your own subjects, write them in the box at the bottom.",
+        addSubjectsLabel: "➕ Add new subjects",
+        addSubjectsPh: "You can write many subjects at once. Put each on a new line, or separate them with commas (,).",
+        addGroupHint: "Subjects will be added to the group: {group}",
+        addSubjectsBtn: "➕ Add subjects",
+        customTag: " (added by you)",
+        targetStudied: "Total studied: {time} · Goal: {hours} hours",
+        targetNone: "Total studied: {time} · No goal set",
+        goalChange: "Change goal",
+        goalSet: "Set goal",
+        renameBtn: "✏️ Rename",
+        removeBtn: "🗑 Delete",
+        promptGoal: "How many hours in total do you want to study \"{subject}\"?\n(Enter a number, e.g. 10. Enter 0 to remove the goal.)",
+        goalInvalid: "Enter a valid number, e.g. 10.",
+        addNeedName: "Please write one or more subject names first.",
+        addedMsg: "{n} subject(s) added:\n{list}",
+        skippedMsg: "These were not added (already exist or name is longer than 40 characters):\n{list}",
+        renamePrompt: "Enter the correct name for \"{name}\":",
+        renameEmpty: "The subject name cannot be empty.",
+        nameTooLong: "Please shorten the name (max 40 characters).",
+        renameExists: "A subject named \"{name}\" already exists.",
+        deleteBusy: "The timer is running or paused for \"{name}\".\nPlease Stop & Save first, then delete.",
+        deleteConfirm: "Delete the subject \"{name}\"?\n\n• It will be removed from the list\n• Its goal will be deleted\n• Your earlier study time will not be deleted",
+
+        // Profile
         profileTitle: "👤 Profile",
         profileHint: "Your details are saved only in this device's browser.",
         profileName: "Name",
@@ -1214,11 +1380,12 @@
         profileSave: "💾 Save profile",
         profileSaved: "✅ Profile saved.",
 
+        // Settings
         settingsTitle: "⚙️ Settings",
         darkDesc: "Darker colours that are easier on the eyes at night.",
         darkAria: "Turn Dark Mode on or off",
         langDesc: "Choose the language of the website text.",
-        langNote: "Currently the menu, Home and Settings pages are translated. The other pages will follow in the next step."
+        langNote: "Changing the language changes all website text. Names, routines and subjects you wrote yourself stay as they are."
       }
     };
 
@@ -1226,20 +1393,17 @@
     function t(key, vars) {
       const table = TEXT[lang] || TEXT.bn;
 
-      let text;
+      let text = table[key];
 
-      if (table[key] !== undefined) {
-        text = table[key];
-      } else if (TEXT.bn[key] !== undefined) {
-        text = TEXT.bn[key];
-      } else {
-        text = key;
-      }
+      if (text === undefined) text = TEXT.bn[key];
+      if (text === undefined) text = key;
 
       if (vars) {
-        Object.keys(vars).forEach(name => {
-          text = text.split("{" + name + "}").join(vars[name]);
-        });
+        text = text.replace(/\{(\w+)\}/g, (match, name) =>
+          Object.prototype.hasOwnProperty.call(vars, name)
+            ? vars[name]
+            : match
+        );
       }
 
       return text;
@@ -1267,7 +1431,13 @@
 
       if (select) select.value = lang;
 
-      renderHome();
+      // পরিবর্তনশীল অংশগুলো নতুন ভাষায় আবার আঁকা
+      updateSubjects();
+      updateRoutineFormUI();
+      renderRoutines();
+      renderSummary();
+      renderTargets();
+      updateTimerUI();
     }
 
     // সেটিংস পাতায় ভাষা বদলালে
@@ -1575,10 +1745,10 @@
       const cancelBtn = document.getElementById("routineCancelBtn");
 
       if (editingId !== null) {
-        saveBtn.textContent = "✅ পরিবর্তন সেভ করো";
+        saveBtn.textContent = t("routineSaveChanges");
         cancelBtn.classList.remove("hidden");
       } else {
-        saveBtn.textContent = "➕ রুটিন যোগ করো";
+        saveBtn.textContent = t("routineAdd");
         cancelBtn.classList.add("hidden");
       }
     }
@@ -1595,7 +1765,7 @@
       const note = document.getElementById("routineNote").value.trim();
 
       if (!name) {
-        alert("আগে কাজের নাম লেখো।");
+        alert(t("routineNeedName"));
         return;
       }
 
@@ -1685,7 +1855,7 @@
         const check = document.createElement("input");
         check.type = "checkbox";
         check.checked = isDone;
-        check.setAttribute("aria-label", "কাজটি সম্পন্ন চিহ্ন দাও");
+        check.setAttribute("aria-label", t("routineCheckAria"));
         check.onchange = () => toggleRoutine(item.id);
 
         const details = document.createElement("div");
@@ -1709,12 +1879,12 @@
 
         const edit = document.createElement("button");
         edit.className = "edit-btn";
-        edit.textContent = "সম্পাদনা";
+        edit.textContent = t("routineEdit");
         edit.onclick = () => startEdit(item.id);
 
         const del = document.createElement("button");
         del.className = "delete-btn";
-        del.textContent = "মুছো";
+        del.textContent = t("routineDelete");
         del.onclick = () => deleteRoutine(item.id);
 
         actions.append(edit, del);
@@ -1743,9 +1913,11 @@
 
       box.classList.toggle("hidden", total === 0);
 
-      text.textContent =
-        "আজ " + toBn(total) + "টির মধ্যে " + toBn(done) +
-        "টি কাজ সম্পন্ন (" + toBn(percent) + "%)";
+      text.textContent = t("routineProgressText", {
+        total: toBn(total),
+        done: toBn(done),
+        percent: toBn(percent)
+      });
 
       fill.style.width = percent + "%";
     }
@@ -1798,6 +1970,40 @@
       ]
     };
 
+    // আগে থেকে দেওয়া বিষয়ের ইংরেজি নাম (শুধু দেখানোর জন্য; সেভ করা নাম বাংলাই থাকে)
+    const SUBJECT_EN = {
+      "পদার্থবিজ্ঞান": "Physics",
+      "রসায়ন": "Chemistry",
+      "জীববিজ্ঞান": "Biology",
+      "উচ্চতর গণিত": "Higher Math",
+      "আইসিটি": "ICT",
+      "বাংলা": "Bangla",
+      "ইংরেজি": "English",
+      "হিসাববিজ্ঞান": "Accounting",
+      "ব্যবসায় সংগঠন ও ব্যবস্থাপনা": "Business Organization & Management",
+      "ফিন্যান্স ও ব্যাংকিং": "Finance & Banking",
+      "অর্থনীতি": "Economics",
+      "ইতিহাস": "History",
+      "পৌরনীতি ও সুশাসন": "Civics & Good Governance",
+      "যুক্তিবিদ্যা": "Logic"
+    };
+
+    // বিষয়ের নাম বর্তমান ভাষায় দেখানো (নিজের যোগ করা বিষয় যেমন আছে তেমনই)
+    function subjectLabel(name) {
+      return lang === "en" && SUBJECT_EN[name] ? SUBJECT_EN[name] : name;
+    }
+
+    // একটি বিষয়ের নাম (বাংলা বা ইংরেজি) লেখা নামের সঙ্গে মেলে কি না
+    function subjectMatches(subject, name) {
+      const wanted = name.toLowerCase();
+
+      if (subject.toLowerCase() === wanted) return true;
+
+      const english = SUBJECT_EN[subject];
+
+      return !!english && english.toLowerCase() === wanted;
+    }
+
     // একটি বিভাগের নিজে যোগ করা বিষয়গুলো
     function getCustomSubjects(group) {
       return Array.isArray(customSubjects[group])
@@ -1835,7 +2041,7 @@
       subjects.forEach(subject => {
         const option = document.createElement("option");
         option.value = subject;
-        option.textContent = subject;
+        option.textContent = subjectLabel(subject);
         select.appendChild(option);
       });
 
@@ -1856,7 +2062,7 @@
         .filter(name => name !== "");
 
       if (names.length === 0) {
-        alert("আগে এক বা একাধিক বিষয়ের নাম লেখো।");
+        alert(t("addNeedName"));
         return;
       }
 
@@ -1869,7 +2075,7 @@
 
       names.forEach(name => {
         const exists = getSubjects(group).some(
-          subject => subject.toLowerCase() === name.toLowerCase()
+          subject => subjectMatches(subject, name)
         );
 
         if (name.length > 40 || exists) {
@@ -1893,16 +2099,16 @@
       let message = "";
 
       if (added.length > 0) {
-        message +=
-          toBn(added.length) + "টি বিষয় যোগ হয়েছে:\n" + added.join(", ");
+        message += t("addedMsg", {
+          n: toBn(added.length),
+          list: added.join(", ")
+        });
       }
 
       if (skipped.length > 0) {
         if (message) message += "\n\n";
 
-        message +=
-          "এগুলো যোগ হয়নি (আগে থেকেই আছে বা নাম ৪০ অক্ষরের বেশি):\n" +
-          skipped.join(", ");
+        message += t("skippedMsg", { list: skipped.join(", ") });
       }
 
       alert(message);
@@ -1911,7 +2117,7 @@
     // নিজে যোগ করা বিষয়ের নাম বদলানো
     function renameSubject(group, oldName) {
       const answer = prompt(
-        "\"" + oldName + "\" বিষয়ের সঠিক নাম লেখো:",
+        t("renamePrompt", { name: oldName }),
         oldName
       );
 
@@ -1921,24 +2127,23 @@
       const newName = cleanSubjectName(answer);
 
       if (!newName) {
-        alert("বিষয়ের নাম খালি রাখা যাবে না।");
+        alert(t("renameEmpty"));
         return;
       }
 
       if (newName.length > 40) {
-        alert("নাম একটু ছোট করে লেখো (সর্বোচ্চ ৪০ অক্ষর)।");
+        alert(t("nameTooLong"));
         return;
       }
 
       if (newName === oldName) return;
 
       const exists = getSubjects(group).some(subject =>
-        subject !== oldName &&
-        subject.toLowerCase() === newName.toLowerCase()
+        subject !== oldName && subjectMatches(subject, newName)
       );
 
       if (exists) {
-        alert("\"" + newName + "\" নামে বিষয় আগে থেকেই আছে।");
+        alert(t("renameExists", { name: newName }));
         return;
       }
 
@@ -1991,20 +2196,11 @@
     function deleteSubject(group, name) {
       // ওই বিষয়ে timer চলছে বা pause করা থাকলে মোছা যাবে না
       if (activeStudy && activeStudy.subject === name) {
-        alert(
-          "\"" + name + "\" বিষয়ে এখন timer চলছে বা Pause করা আছে।\n" +
-          "আগে Stop & Save করো, তারপর মুছো।"
-        );
+        alert(t("deleteBusy", { name: name }));
         return;
       }
 
-      const message =
-        "\"" + name + "\" বিষয়টি মুছে ফেলবে?\n\n" +
-        "• বিষয়টি তালিকা থেকে সরে যাবে\n" +
-        "• এর লক্ষ্যও মুছে যাবে\n" +
-        "• আগের পড়ার সময়ের হিসাব মুছবে না";
-
-      if (!confirm(message)) return;
+      if (!confirm(t("deleteConfirm", { name: name }))) return;
 
       customSubjects[group] = getCustomSubjects(group).filter(
         subject => subject !== name
@@ -2103,11 +2299,13 @@
       stop.classList.toggle("hidden", !activeStudy);
 
       if (!activeStudy) {
-        status.textContent = "পড়াশোনা শুরু করতে Start চাপো।";
+        status.textContent = t("timerIdle");
       } else if (activeStudy.running) {
-        status.textContent = "পড়ছ: " + activeStudy.subject;
+        status.textContent = t("timerRunning", {
+          subject: subjectLabel(activeStudy.subject)
+        });
       } else {
-        status.textContent = "পড়াশোনা Pause করা আছে।";
+        status.textContent = t("timerPaused");
       }
     }
 
@@ -2155,7 +2353,7 @@
       const date = activeStudy.date || todayKey();
 
       if (seconds < 1) {
-        if (!confirm("সময় প্রায় ০। এই সেশন সেভ করবে?")) return;
+        if (!confirm(t("zeroConfirm"))) return;
       }
 
       sessions.push({
@@ -2178,7 +2376,7 @@
       renderSummary();
       renderTargets();
 
-      alert("Study session সেভ হয়েছে! ভালো কাজ! 🎉");
+      alert(t("sessionSaved"));
     }
 
     // ---------- DATES ----------
@@ -2232,19 +2430,11 @@
     }
 
     // ---------- DAILY SUMMARY ----------
-    const periodTexts = {
-      today: {
-        total: "আজ মোট: ",
-        empty: "আজ এখনো কোনো বিষয় পড়া হয়নি।"
-      },
-      week: {
-        total: "এই সপ্তাহে মোট: ",
-        empty: "এই সপ্তাহে এখনো কোনো বিষয় পড়া হয়নি।"
-      },
-      month: {
-        total: "এই মাসে মোট: ",
-        empty: "এই মাসে এখনো কোনো বিষয় পড়া হয়নি।"
-      }
+    // আজ / সপ্তাহ / মাসের জন্য কোন লেখার চাবি ব্যবহার হবে
+    const periodKeys = {
+      today: { total: "periodTotalToday", empty: "periodEmptyToday" },
+      week: { total: "periodTotalWeek", empty: "periodEmptyWeek" },
+      month: { total: "periodTotalMonth", empty: "periodEmptyMonth" }
     };
 
     function setPeriod(period) {
@@ -2274,7 +2464,7 @@
       let totalSeconds = 0;
 
       periodSessions.forEach(session => {
-        const name = session.subject || "অজানা বিষয়";
+        const name = session.subject || t("unknownSubject");
         const seconds = Number(session.seconds) || 0;
 
         totals[name] = (totals[name] || 0) + seconds;
@@ -2287,11 +2477,11 @@
 
       const totalLine = document.getElementById("periodTotal");
       totalLine.textContent =
-        periodTexts[periodView].total + formatTime(totalSeconds);
+        t(periodKeys[periodView].total) + formatTime(totalSeconds);
       totalLine.classList.toggle("hidden", entries.length === 0);
 
       const emptyLine = document.getElementById("subjectTotalsEmpty");
-      emptyLine.textContent = periodTexts[periodView].empty;
+      emptyLine.textContent = t(periodKeys[periodView].empty);
       emptyLine.classList.toggle("hidden", entries.length > 0);
 
       entries.forEach(([name, seconds]) => {
@@ -2306,7 +2496,7 @@
         top.className = "subject-row-top";
 
         const title = document.createElement("span");
-        title.textContent = name;
+        title.textContent = subjectLabel(name);
 
         const value = document.createElement("span");
         value.textContent =
@@ -2362,7 +2552,7 @@
         const details = document.createElement("div");
 
         const name = document.createElement("strong");
-        name.textContent = session.subject;
+        name.textContent = subjectLabel(session.subject);
 
         const duration = document.createElement("div");
         duration.className = "small";
@@ -2377,7 +2567,7 @@
     }
 
     function clearSessions() {
-      if (!confirm("সব Study Session মুছে ফেলতে চাও?")) return;
+      if (!confirm(t("clearConfirm"))) return;
 
       sessions = [];
       saveStorage(SESSION_KEY, sessions);
@@ -2403,10 +2593,9 @@
       const customList = getCustomSubjects(group);
 
       // কোন বিভাগে বিষয় যোগ হবে, তা ফর্মের নিচে দেখানো
-      document.getElementById("addGroupHint").textContent =
-        "বিষয়গুলো যোগ হবে: " +
-        groupSelect.options[groupSelect.selectedIndex].textContent +
-        " বিভাগে";
+      document.getElementById("addGroupHint").textContent = t("addGroupHint", {
+        group: groupSelect.options[groupSelect.selectedIndex].textContent
+      });
 
       subjects.forEach(subject => {
         const isCustom = customList.includes(subject);
@@ -2427,12 +2616,12 @@
 
         const name = document.createElement("span");
         name.className = "target-name";
-        name.textContent = subject;
+        name.textContent = subjectLabel(subject);
 
         if (isCustom) {
           const tag = document.createElement("small");
           tag.className = "custom-tag";
-          tag.textContent = " (নিজের যোগ করা)";
+          tag.textContent = t("customTag");
           name.appendChild(tag);
         }
 
@@ -2449,13 +2638,12 @@
         info.className = "small target-info";
 
         if (targetSeconds > 0) {
-          info.textContent =
-            "মোট পড়েছ: " + formatTime(studied) +
-            " · লক্ষ্য: " + toBn(targetHours) + " ঘণ্টা";
+          info.textContent = t("targetStudied", {
+            time: formatTime(studied),
+            hours: toBn(targetHours)
+          });
         } else {
-          info.textContent =
-            "মোট পড়েছ: " + formatTime(studied) +
-            " · লক্ষ্য ঠিক করা নেই";
+          info.textContent = t("targetNone", { time: formatTime(studied) });
         }
 
         item.append(top, info);
@@ -2478,7 +2666,7 @@
         const button = document.createElement("button");
         button.className = "target-btn";
         button.textContent =
-          targetSeconds > 0 ? "লক্ষ্য বদলাও" : "লক্ষ্য ঠিক করো";
+          targetSeconds > 0 ? t("goalChange") : t("goalSet");
         button.onclick = () => setTarget(subject);
 
         actions.appendChild(button);
@@ -2486,12 +2674,12 @@
         if (isCustom) {
           const rename = document.createElement("button");
           rename.className = "rename-btn";
-          rename.textContent = "✏️ নাম বদলাও";
+          rename.textContent = t("renameBtn");
           rename.onclick = () => renameSubject(group, subject);
 
           const remove = document.createElement("button");
           remove.className = "delete-btn";
-          remove.textContent = "🗑 মুছো";
+          remove.textContent = t("removeBtn");
           remove.onclick = () => deleteSubject(group, subject);
 
           actions.append(rename, remove);
@@ -2506,8 +2694,7 @@
       const current = Number(targets[subject]) || 0;
 
       const answer = prompt(
-        "\"" + subject + "\" বিষয়ে মোট কত ঘণ্টা পড়তে চাও?\n" +
-        "(সংখ্যা লেখো, যেমন 10। লক্ষ্য মুছতে ০ লেখো।)",
+        t("promptGoal", { subject: subjectLabel(subject) }),
         current > 0 ? String(current) : ""
       );
 
@@ -2517,7 +2704,7 @@
       const hours = parseFloat(String(answer).replace(",", "."));
 
       if (isNaN(hours) || hours < 0) {
-        alert("সঠিক সংখ্যা লেখো, যেমন 10।");
+        alert(t("goalInvalid"));
         return;
       }
 
@@ -2538,13 +2725,11 @@
 
       loadTheme();
       loadProfileForm();
-      applyLanguage(lang);
-      renderRoutines();
       loadSelection();
-      renderSummary();
-      renderTargets();
-      updateTimerUI();
-      updateRoutineFormUI();
+
+      // সব লেখা সেভ করা ভাষায় বসানো এবং পরিবর্তনশীল অংশ আঁকা
+      applyLanguage(lang);
+
       loadPage();
 
       window.setInterval(() => {
