@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f1b3d">
   <title>DailyLife - Routine & Study Tracker</title>
 
   <style>
@@ -15,6 +16,9 @@
       --muted: #64748b;
       --border: #dbe4f0;
       --green: #15803d;
+      --navy: #0f1b3d;
+      --navy-soft: #1c2d5e;
+      --navy-text: #b9c4e4;
     }
 
     * {
@@ -23,7 +27,7 @@
 
     body {
       margin: 0;
-      padding-bottom: 80px;
+      padding-bottom: 96px;
       background: var(--bg);
       color: var(--text);
       font-family: Arial, "Noto Sans Bengali", sans-serif;
@@ -31,7 +35,7 @@
     }
 
     header {
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      background: linear-gradient(135deg, var(--navy), var(--navy-soft));
       color: white;
       text-align: center;
       padding: 25px 15px;
@@ -44,6 +48,7 @@
 
     header p {
       margin: 5px 0 0;
+      color: var(--navy-text);
     }
 
     main {
@@ -55,10 +60,10 @@
     .card {
       background: white;
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 18px;
       padding: 18px;
       margin-bottom: 16px;
-      box-shadow: 0 3px 12px #17203308;
+      box-shadow: 0 4px 16px #0f1b3d14;
     }
 
     .card h2 {
@@ -344,7 +349,7 @@
     }
     /* ---- নতুন বিষয় যোগ করার ফর্ম শেষ ---- */
 
-    /* ---- হোম পাতা (নতুন) ---- */
+    /* ---- হোম পাতা ---- */
     .home-top {
       display: flex;
       align-items: center;
@@ -409,7 +414,7 @@
     }
     /* ---- হোম পাতা শেষ ---- */
 
-    /* ---- নিচের মেনু বার ---- */
+    /* ---- নিচের মেনু বার / বাঁ দিকের sidebar (নেভি) ---- */
     .bottom-nav {
       position: fixed;
       left: 0;
@@ -417,10 +422,15 @@
       bottom: 0;
       z-index: 20;
       display: flex;
-      background: white;
-      border-top: 1px solid var(--border);
-      box-shadow: 0 -3px 12px #17203314;
-      padding-bottom: env(safe-area-inset-bottom);
+      gap: 4px;
+      background: var(--navy);
+      padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+      box-shadow: 0 -4px 16px #0f1b3d40;
+    }
+
+    .nav-brand,
+    .nav-quote {
+      display: none;
     }
 
     .nav-btn {
@@ -430,8 +440,8 @@
       align-items: center;
       gap: 2px;
       background: transparent;
-      color: var(--muted);
-      border-radius: 0;
+      color: var(--navy-text);
+      border-radius: 12px;
       padding: 8px 4px;
       font-size: 12px;
       line-height: 1.3;
@@ -442,8 +452,8 @@
     }
 
     .nav-btn.active {
-      background: var(--light);
-      color: var(--blue);
+      background: var(--blue);
+      color: white;
       font-weight: 700;
     }
     /* ---- নিচের মেনু বার শেষ ---- */
@@ -527,6 +537,65 @@
       .form-row {
         grid-template-columns: 1fr;
         gap: 0;
+      }
+    }
+
+    /* ---- বড় পর্দা: বাঁ দিকে নেভি sidebar (নতুন) ---- */
+    @media (min-width: 900px) {
+      body {
+        padding-bottom: 0;
+        padding-left: 240px;
+      }
+
+      .bottom-nav {
+        top: 0;
+        right: auto;
+        width: 240px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        padding: 24px 14px;
+        box-shadow: 4px 0 18px #0f1b3d33;
+      }
+
+      .nav-brand {
+        display: block;
+        padding: 4px 10px 22px;
+      }
+
+      .nav-brand-name {
+        color: white;
+        font-size: 22px;
+        font-weight: 700;
+      }
+
+      .nav-brand-tag {
+        color: var(--navy-text);
+        font-size: 12px;
+        letter-spacing: .5px;
+      }
+
+      .nav-btn {
+        flex: none;
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 12px;
+        padding: 12px 14px;
+        font-size: 15px;
+      }
+
+      .nav-btn .nav-icon {
+        font-size: 18px;
+      }
+
+      .nav-quote {
+        display: block;
+        margin-top: auto;
+        padding: 14px 10px 0;
+        color: var(--navy-text);
+        font-size: 13px;
+        font-style: italic;
+        line-height: 1.5;
       }
     }
   </style>
@@ -745,6 +814,11 @@
   </footer>
 
   <nav class="bottom-nav" aria-label="মূল মেনু">
+    <div class="nav-brand">
+      <div class="nav-brand-name">🌟 DailyLife</div>
+      <div class="nav-brand-tag">Plan • Study • Achieve</div>
+    </div>
+
     <button id="nav-home" class="nav-btn active" onclick="showPage('home', true)">
       <span class="nav-icon">🏠</span>
       <span>হোম</span>
@@ -764,6 +838,10 @@
       <span class="nav-icon">🎯</span>
       <span>লক্ষ্য</span>
     </button>
+
+    <div class="nav-quote">
+      "Small steps everyday lead to big results."
+    </div>
   </nav>
 
   <script>
