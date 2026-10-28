@@ -483,6 +483,12 @@
       gap: 16px;
     }
 
+    .setting-row + .setting-row {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px dashed var(--border);
+    }
+
     .setting-row p {
       margin: 2px 0 0;
     }
@@ -519,7 +525,18 @@
     }
     /* ---- সেটিংস পাতা ও সুইচ শেষ ---- */
 
-    /* ---- প্রোফাইল (নতুন) ---- */
+    /* ---- ভাষা বাছাই (নতুন) ---- */
+    .lang-select {
+      width: auto;
+      flex-shrink: 0;
+    }
+
+    #langNote {
+      margin: 14px 0 0;
+    }
+    /* ---- ভাষা বাছাই শেষ ---- */
+
+    /* ---- প্রোফাইল ---- */
     #profileStatus {
       min-height: 22px;
       margin: 8px 0 0;
@@ -718,7 +735,7 @@
 <body>
   <header>
     <h1>🌟 DailyLife</h1>
-    <p>তোমার রুটিন, পড়াশোনা ও প্রতিদিনের অগ্রগতি</p>
+    <p data-i18n="headerTagline">তোমার রুটিন, পড়াশোনা ও প্রতিদিনের অগ্রগতি</p>
   </header>
 
   <main>
@@ -732,7 +749,7 @@
         </div>
 
         <div>
-          <strong>আজকের অগ্রগতি</strong>
+          <strong data-i18n="homeProgressTitle">আজকের অগ্রগতি</strong>
           <p id="homeMessage" class="small"></p>
         </div>
       </div>
@@ -742,40 +759,40 @@
       <div class="stats">
         <div class="stat">
           <strong id="homeTime">00:00:00</strong>
-          <span>মোট পড়ার সময়</span>
+          <span data-i18n="statTime">মোট পড়ার সময়</span>
         </div>
 
         <div class="stat">
           <strong id="homeDone">০ / ০</strong>
-          <span>সম্পন্ন কাজ</span>
+          <span data-i18n="statDone">সম্পন্ন কাজ</span>
         </div>
 
         <div class="stat">
           <strong id="homeSubjects">০</strong>
-          <span>বিষয় পড়া হয়েছে</span>
+          <span data-i18n="statSubjects">বিষয় পড়া হয়েছে</span>
         </div>
 
         <div class="stat">
           <strong id="homeStreak">০ দিন</strong>
-          <span>Study Streak</span>
+          <span data-i18n="statStreak">Study Streak</span>
         </div>
       </div>
 
-      <p class="small">
+      <p class="small" data-i18n="homeNote">
         শুধু সেভ করা session ধরা হয়। চলমান timer Stop & Save করলে যোগ হবে।
       </p>
     </section>
 
     <section class="card" data-page="home">
-      <h2>🗓 আজকের রুটিন</h2>
+      <h2 data-i18n="homeRoutineTitle">🗓 আজকের রুটিন</h2>
 
       <div id="homeRoutineList"></div>
-      <p id="homeRoutineEmpty" class="small">
+      <p id="homeRoutineEmpty" class="small" data-i18n="homeRoutineEmpty">
         এখনো কোনো রুটিন নেই। রুটিন পাতায় গিয়ে যোগ করো।
       </p>
 
       <div class="button-row">
-        <button class="secondary-btn" onclick="showPage('routine', true)">
+        <button class="secondary-btn" onclick="showPage('routine', true)" data-i18n="viewAll">
           সব রুটিন দেখো →
         </button>
       </div>
@@ -923,32 +940,47 @@
     </section>
 
     <section class="card" data-page="settings">
-      <h2>👤 প্রোফাইল</h2>
-      <p class="small">তোমার তথ্য শুধু এই ফোনের ব্রাউজারে সেভ থাকে।</p>
+      <h2 data-i18n="profileTitle">👤 প্রোফাইল</h2>
+      <p class="small" data-i18n="profileHint">তোমার তথ্য শুধু এই ফোনের ব্রাউজারে সেভ থাকে।</p>
 
-      <label for="profileName">নাম</label>
-      <input id="profileName" maxlength="40" placeholder="যেমন: রাহিম">
+      <label for="profileName" data-i18n="profileName">নাম</label>
+      <input
+        id="profileName"
+        maxlength="40"
+        placeholder="যেমন: রাহিম"
+        data-i18n-placeholder="profileNamePh"
+      >
 
-      <label for="profileLevel">শ্রেণি বা শিক্ষাস্তর</label>
-      <input id="profileLevel" maxlength="40" placeholder="যেমন: HSC ১ম বর্ষ">
+      <label for="profileLevel" data-i18n="profileLevel">শ্রেণি বা শিক্ষাস্তর</label>
+      <input
+        id="profileLevel"
+        maxlength="40"
+        placeholder="যেমন: HSC ১ম বর্ষ"
+        data-i18n-placeholder="profileLevelPh"
+      >
 
-      <label for="profileSchool">প্রতিষ্ঠান (ঐচ্ছিক)</label>
-      <input id="profileSchool" maxlength="60" placeholder="যেমন: কলেজের নাম">
+      <label for="profileSchool" data-i18n="profileSchool">প্রতিষ্ঠান (ঐচ্ছিক)</label>
+      <input
+        id="profileSchool"
+        maxlength="60"
+        placeholder="যেমন: কলেজের নাম"
+        data-i18n-placeholder="profileSchoolPh"
+      >
 
       <div class="button-row">
-        <button onclick="saveProfile()">💾 প্রোফাইল সেভ করো</button>
+        <button onclick="saveProfile()" data-i18n="profileSave">💾 প্রোফাইল সেভ করো</button>
       </div>
 
       <p id="profileStatus" class="center"></p>
     </section>
 
     <section class="card" data-page="settings">
-      <h2>⚙️ সেটিংস</h2>
+      <h2 data-i18n="settingsTitle">⚙️ সেটিংস</h2>
 
       <div class="setting-row">
         <div>
           <strong>🌙 Dark Mode</strong>
-          <p class="small">রাতে পড়ার সময় চোখের আরামের জন্য গাঢ় রঙ।</p>
+          <p class="small" data-i18n="darkDesc">রাতে পড়ার সময় চোখের আরামের জন্য গাঢ় রঙ।</p>
         </div>
 
         <button
@@ -957,19 +989,41 @@
           role="switch"
           aria-checked="false"
           aria-label="Dark Mode চালু বা বন্ধ করো"
+          data-i18n-aria="darkAria"
           onclick="toggleDarkMode()"
         >
           <span class="switch-knob"></span>
         </button>
       </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>🌐 ভাষা / Language</strong>
+          <p class="small" data-i18n="langDesc">ওয়েবসাইটের লেখা কোন ভাষায় দেখবে, তা বেছে নাও।</p>
+        </div>
+
+        <select
+          id="languageSelect"
+          class="lang-select"
+          aria-label="Language"
+          onchange="onLanguageChange()"
+        >
+          <option value="bn">বাংলা</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+
+      <p id="langNote" class="small" data-i18n="langNote">
+        বর্তমানে মেনু, হোম ও সেটিংস পাতা অনুবাদ হয়েছে। বাকি পাতা পরের ধাপে আসবে।
+      </p>
     </section>
   </main>
 
   <footer>
-    DailyLife © <span id="year"></span> · তোমার প্রতিদিনের ছোট ছোট অগ্রগতি গুরুত্বপূর্ণ 💙
+    DailyLife © <span id="year"></span> · <span data-i18n="footerText">তোমার প্রতিদিনের ছোট ছোট অগ্রগতি গুরুত্বপূর্ণ</span> 💙
   </footer>
 
-  <nav class="bottom-nav" aria-label="মূল মেনু">
+  <nav class="bottom-nav" aria-label="মূল মেনু" data-i18n-aria="navAria">
     <div class="nav-brand">
       <div class="nav-brand-name">🌟 DailyLife</div>
       <div class="nav-brand-tag">Plan • Study • Achieve</div>
@@ -977,27 +1031,27 @@
 
     <button id="nav-home" class="nav-btn active" onclick="showPage('home', true)">
       <span class="nav-icon">🏠</span>
-      <span>হোম</span>
+      <span data-i18n="navHome">হোম</span>
     </button>
 
     <button id="nav-routine" class="nav-btn" onclick="showPage('routine', true)">
       <span class="nav-icon">📅</span>
-      <span>রুটিন</span>
+      <span data-i18n="navRoutine">রুটিন</span>
     </button>
 
     <button id="nav-study" class="nav-btn" onclick="showPage('study', true)">
       <span class="nav-icon">📚</span>
-      <span>পড়াশোনা</span>
+      <span data-i18n="navStudy">পড়াশোনা</span>
     </button>
 
     <button id="nav-target" class="nav-btn" onclick="showPage('target', true)">
       <span class="nav-icon">🎯</span>
-      <span>লক্ষ্য</span>
+      <span data-i18n="navTarget">লক্ষ্য</span>
     </button>
 
     <button id="nav-settings" class="nav-btn" onclick="showPage('settings', true)">
       <span class="nav-icon">⚙️</span>
-      <span>সেটিংস</span>
+      <span data-i18n="navSettings">সেটিংস</span>
     </button>
 
     <div class="nav-quote">
@@ -1018,6 +1072,7 @@
     const PAGE_KEY = "dailyLifePage";
     const THEME_KEY = "dailyLifeTheme";
     const PROFILE_KEY = "dailyLifeProfile";
+    const LANG_KEY = "dailyLifeLang";
 
     function readStorage(key, fallback) {
       try {
@@ -1048,14 +1103,186 @@
       profile = { name: "", level: "", school: "" };
     }
 
+    // বর্তমান ভাষা: "bn" (বাংলা) বা "en" (English)
+    let lang = readStorage(LANG_KEY, "bn");
+
+    if (lang !== "en") lang = "bn";
+
     // কোন রুটিন এখন edit হচ্ছে (না হলে null)
     let editingId = null;
 
     // বিষয়ভিত্তিক সময়ের কোন ভিউ খোলা: "today", "week" বা "month"
     let periodView = "today";
 
+    // ---------- LANGUAGE (বাংলা / English) ----------
+    // লেখার তালিকা: প্রতিটি চাবির বাংলা ও ইংরেজি রূপ
+    const TEXT = {
+      bn: {
+        headerTagline: "তোমার রুটিন, পড়াশোনা ও প্রতিদিনের অগ্রগতি",
+        navHome: "হোম",
+        navRoutine: "রুটিন",
+        navStudy: "পড়াশোনা",
+        navTarget: "লক্ষ্য",
+        navSettings: "সেটিংস",
+        navAria: "মূল মেনু",
+        footerText: "তোমার প্রতিদিনের ছোট ছোট অগ্রগতি গুরুত্বপূর্ণ",
+
+        greetNight: "শুভ রাত্রি",
+        greetMorning: "শুভ সকাল",
+        greetNoon: "শুভ দুপুর",
+        greetAfternoon: "শুভ বিকেল",
+        greetEvening: "শুভ সন্ধ্যা",
+        todayPrefix: "আজ, ",
+
+        homeProgressTitle: "আজকের অগ্রগতি",
+        homeMsgNone: "রুটিনে কাজ যোগ করলে অগ্রগতি এখানে দেখা যাবে।",
+        homeMsgAll: "আজকের সব কাজ শেষ! দারুণ! 🎉",
+        homeMsgHalf: "ভালোই এগোচ্ছ, চালিয়ে যাও!",
+        homeMsgStart: "শুরু করো, ছোট ছোট ধাপেই বড় অগ্রগতি।",
+        statTime: "মোট পড়ার সময়",
+        statDone: "সম্পন্ন কাজ",
+        statSubjects: "বিষয় পড়া হয়েছে",
+        statStreak: "Study Streak",
+        streakDay: "{n} দিন",
+        streakDays: "{n} দিন",
+        homeNote: "শুধু সেভ করা session ধরা হয়। চলমান timer Stop & Save করলে যোগ হবে।",
+        homeRoutineTitle: "🗓 আজকের রুটিন",
+        homeRoutineEmpty: "এখনো কোনো রুটিন নেই। রুটিন পাতায় গিয়ে যোগ করো।",
+        viewAll: "সব রুটিন দেখো →",
+        moreRoutines: "আরও {n}টি রুটিন আছে।",
+
+        profileTitle: "👤 প্রোফাইল",
+        profileHint: "তোমার তথ্য শুধু এই ফোনের ব্রাউজারে সেভ থাকে।",
+        profileName: "নাম",
+        profileLevel: "শ্রেণি বা শিক্ষাস্তর",
+        profileSchool: "প্রতিষ্ঠান (ঐচ্ছিক)",
+        profileNamePh: "যেমন: রাহিম",
+        profileLevelPh: "যেমন: HSC ১ম বর্ষ",
+        profileSchoolPh: "যেমন: কলেজের নাম",
+        profileSave: "💾 প্রোফাইল সেভ করো",
+        profileSaved: "✅ প্রোফাইল সেভ হয়েছে।",
+
+        settingsTitle: "⚙️ সেটিংস",
+        darkDesc: "রাতে পড়ার সময় চোখের আরামের জন্য গাঢ় রঙ।",
+        darkAria: "Dark Mode চালু বা বন্ধ করো",
+        langDesc: "ওয়েবসাইটের লেখা কোন ভাষায় দেখবে, তা বেছে নাও।",
+        langNote: "বর্তমানে মেনু, হোম ও সেটিংস পাতা অনুবাদ হয়েছে। বাকি পাতা পরের ধাপে আসবে।"
+      },
+
+      en: {
+        headerTagline: "Your routine, studies and daily progress",
+        navHome: "Home",
+        navRoutine: "Routine",
+        navStudy: "Study",
+        navTarget: "Goals",
+        navSettings: "Settings",
+        navAria: "Main menu",
+        footerText: "Your small steps every day matter",
+
+        greetNight: "Good night",
+        greetMorning: "Good morning",
+        greetNoon: "Good afternoon",
+        greetAfternoon: "Good afternoon",
+        greetEvening: "Good evening",
+        todayPrefix: "Today, ",
+
+        homeProgressTitle: "Today's progress",
+        homeMsgNone: "Add tasks to your routine and your progress will show here.",
+        homeMsgAll: "All of today's tasks are done! Great job! 🎉",
+        homeMsgHalf: "You're doing well, keep going!",
+        homeMsgStart: "Get started — small steps lead to big progress.",
+        statTime: "Total study time",
+        statDone: "Completed tasks",
+        statSubjects: "Subjects studied",
+        statStreak: "Study streak",
+        streakDay: "{n} day",
+        streakDays: "{n} days",
+        homeNote: "Only saved sessions are counted. A running timer is added after you Stop & Save.",
+        homeRoutineTitle: "🗓 Today's routine",
+        homeRoutineEmpty: "No routine yet. Go to the Routine page to add one.",
+        viewAll: "View all routines →",
+        moreRoutines: "{n} more routines.",
+
+        profileTitle: "👤 Profile",
+        profileHint: "Your details are saved only in this device's browser.",
+        profileName: "Name",
+        profileLevel: "Class or education level",
+        profileSchool: "Institution (optional)",
+        profileNamePh: "e.g. Rahim",
+        profileLevelPh: "e.g. HSC 1st year",
+        profileSchoolPh: "e.g. College name",
+        profileSave: "💾 Save profile",
+        profileSaved: "✅ Profile saved.",
+
+        settingsTitle: "⚙️ Settings",
+        darkDesc: "Darker colours that are easier on the eyes at night.",
+        darkAria: "Turn Dark Mode on or off",
+        langDesc: "Choose the language of the website text.",
+        langNote: "Currently the menu, Home and Settings pages are translated. The other pages will follow in the next step."
+      }
+    };
+
+    // চাবি অনুযায়ী বর্তমান ভাষার লেখা আনা; {n} এর মতো জায়গায় মান বসানো
+    function t(key, vars) {
+      const table = TEXT[lang] || TEXT.bn;
+
+      let text;
+
+      if (table[key] !== undefined) {
+        text = table[key];
+      } else if (TEXT.bn[key] !== undefined) {
+        text = TEXT.bn[key];
+      } else {
+        text = key;
+      }
+
+      if (vars) {
+        Object.keys(vars).forEach(name => {
+          text = text.split("{" + name + "}").join(vars[name]);
+        });
+      }
+
+      return text;
+    }
+
+    // পুরো পেজের লেখা বর্তমান ভাষায় বদলানো
+    function applyLanguage(code) {
+      lang = code === "en" ? "en" : "bn";
+
+      document.documentElement.lang = lang;
+
+      document.querySelectorAll("[data-i18n]").forEach(element => {
+        element.textContent = t(element.dataset.i18n);
+      });
+
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(element => {
+        element.placeholder = t(element.dataset.i18nPlaceholder);
+      });
+
+      document.querySelectorAll("[data-i18n-aria]").forEach(element => {
+        element.setAttribute("aria-label", t(element.dataset.i18nAria));
+      });
+
+      const select = document.getElementById("languageSelect");
+
+      if (select) select.value = lang;
+
+      renderHome();
+    }
+
+    // সেটিংস পাতায় ভাষা বদলালে
+    function onLanguageChange() {
+      const code = document.getElementById("languageSelect").value;
+
+      applyLanguage(code);
+      saveStorage(LANG_KEY, lang);
+    }
+
     // ---------- HELPERS ----------
+    // বাংলা ভাষায় সংখ্যা বাংলা অঙ্কে, ইংরেজিতে ইংরেজি অঙ্কে
     function toBn(number) {
+      if (lang !== "bn") return String(number);
+
       const digits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
       return String(number).replace(/\d/g, d => digits[d]);
     }
@@ -1135,7 +1362,7 @@
       renderHome();
 
       const status = document.getElementById("profileStatus");
-      status.textContent = "✅ প্রোফাইল সেভ হয়েছে।";
+      status.textContent = t("profileSaved");
 
       clearTimeout(profileStatusTimer);
 
@@ -1207,12 +1434,12 @@
     function greetingText() {
       const hour = new Date().getHours();
 
-      if (hour < 5) return "শুভ রাত্রি";
-      if (hour < 12) return "শুভ সকাল";
-      if (hour < 15) return "শুভ দুপুর";
-      if (hour < 18) return "শুভ বিকেল";
-      if (hour < 20) return "শুভ সন্ধ্যা";
-      return "শুভ রাত্রি";
+      if (hour < 5) return t("greetNight");
+      if (hour < 12) return t("greetMorning");
+      if (hour < 15) return t("greetNoon");
+      if (hour < 18) return t("greetAfternoon");
+      if (hour < 20) return t("greetEvening");
+      return t("greetNight");
     }
 
     function renderHome() {
@@ -1227,16 +1454,20 @@
       let dateText = today;
 
       try {
-        dateText = new Date().toLocaleDateString("bn-BD", {
-          weekday: "long",
-          day: "numeric",
-          month: "long",
-          year: "numeric"
-        });
+        dateText = new Date().toLocaleDateString(
+          lang === "bn" ? "bn-BD" : "en-US",
+          {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+          }
+        );
       } catch (error) {}
 
       document.getElementById("homeDate").textContent =
-        "আজ, " + dateText + (profile.level ? " · " + profile.level : "");
+        t("todayPrefix") + dateText +
+        (profile.level ? " · " + profile.level : "");
 
       // রুটিনের অগ্রগতি
       const total = routines.length;
@@ -1256,13 +1487,13 @@
       let message;
 
       if (total === 0) {
-        message = "রুটিনে কাজ যোগ করলে অগ্রগতি এখানে দেখা যাবে।";
+        message = t("homeMsgNone");
       } else if (percent === 100) {
-        message = "আজকের সব কাজ শেষ! দারুণ! 🎉";
+        message = t("homeMsgAll");
       } else if (percent >= 50) {
-        message = "ভালোই এগোচ্ছ, চালিয়ে যাও!";
+        message = t("homeMsgHalf");
       } else {
-        message = "শুরু করো, ছোট ছোট ধাপেই বড় অগ্রগতি।";
+        message = t("homeMsgStart");
       }
 
       document.getElementById("homeMessage").textContent = message;
@@ -1291,8 +1522,12 @@
       document.getElementById("homeSubjects").textContent =
         toBn(subjectsStudied.size);
 
-      document.getElementById("homeStreak").textContent =
-        toBn(calcStreak()) + " দিন";
+      const streak = calcStreak();
+
+      document.getElementById("homeStreak").textContent = t(
+        streak === 1 ? "streakDay" : "streakDays",
+        { n: toBn(streak) }
+      );
 
       // আজকের রুটিনের ছোট তালিকা (সর্বোচ্চ ৫টি)
       const list = document.getElementById("homeRoutineList");
@@ -1329,8 +1564,7 @@
       if (sorted.length > 5) {
         const more = document.createElement("p");
         more.className = "small";
-        more.textContent =
-          "আরও " + toBn(sorted.length - 5) + "টি রুটিন আছে।";
+        more.textContent = t("moreRoutines", { n: toBn(sorted.length - 5) });
         list.appendChild(more);
       }
     }
@@ -2304,6 +2538,7 @@
 
       loadTheme();
       loadProfileForm();
+      applyLanguage(lang);
       renderRoutines();
       loadSelection();
       renderSummary();
