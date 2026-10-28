@@ -344,7 +344,72 @@
     }
     /* ---- নতুন বিষয় যোগ করার ফর্ম শেষ ---- */
 
-    /* ---- নিচের মেনু বার (নতুন) ---- */
+    /* ---- হোম পাতা (নতুন) ---- */
+    .home-top {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .ring {
+      width: 110px;
+      height: 110px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: conic-gradient(var(--blue) 0%, #dbeafe 0);
+      display: grid;
+      place-items: center;
+    }
+
+    .ring-inner {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      background: white;
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--dark-blue);
+    }
+
+    .home-top p {
+      margin: 4px 0 0;
+    }
+
+    .home-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-top: 9px;
+      overflow-wrap: anywhere;
+    }
+
+    .home-item.done {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+    }
+
+    .home-item.done .home-item-text {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    .home-item-icon {
+      flex-shrink: 0;
+    }
+
+    .home-item-text {
+      font-weight: 600;
+      min-width: 0;
+    }
+    /* ---- হোম পাতা শেষ ---- */
+
+    /* ---- নিচের মেনু বার ---- */
     .bottom-nav {
       position: fixed;
       left: 0;
@@ -474,6 +539,65 @@
   </header>
 
   <main>
+    <section class="card" data-page="home">
+      <h2 id="homeGreeting">শুভেচ্ছা! 👋</h2>
+      <p id="homeDate" class="small"></p>
+
+      <div class="home-top">
+        <div id="homeRing" class="ring">
+          <div id="homeRingText" class="ring-inner">০%</div>
+        </div>
+
+        <div>
+          <strong>আজকের অগ্রগতি</strong>
+          <p id="homeMessage" class="small"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" data-page="home">
+      <div class="stats">
+        <div class="stat">
+          <strong id="homeTime">00:00:00</strong>
+          <span>মোট পড়ার সময়</span>
+        </div>
+
+        <div class="stat">
+          <strong id="homeDone">০ / ০</strong>
+          <span>সম্পন্ন কাজ</span>
+        </div>
+
+        <div class="stat">
+          <strong id="homeSubjects">০</strong>
+          <span>বিষয় পড়া হয়েছে</span>
+        </div>
+
+        <div class="stat">
+          <strong id="homeStreak">০ দিন</strong>
+          <span>Study Streak</span>
+        </div>
+      </div>
+
+      <p class="small">
+        শুধু সেভ করা session ধরা হয়। চলমান timer Stop & Save করলে যোগ হবে।
+      </p>
+    </section>
+
+    <section class="card" data-page="home">
+      <h2>🗓 আজকের রুটিন</h2>
+
+      <div id="homeRoutineList"></div>
+      <p id="homeRoutineEmpty" class="small">
+        এখনো কোনো রুটিন নেই। রুটিন পাতায় গিয়ে যোগ করো।
+      </p>
+
+      <div class="button-row">
+        <button class="secondary-btn" onclick="showPage('routine', true)">
+          সব রুটিন দেখো →
+        </button>
+      </div>
+    </section>
+
     <section class="card" data-page="routine">
       <h2>📅 My Daily Routine</h2>
       <p class="small">প্রতিদিনের কাজের সময় ও নাম লিখে রুটিন তৈরি করো।</p>
@@ -621,7 +745,12 @@
   </footer>
 
   <nav class="bottom-nav" aria-label="মূল মেনু">
-    <button id="nav-routine" class="nav-btn active" onclick="showPage('routine', true)">
+    <button id="nav-home" class="nav-btn active" onclick="showPage('home', true)">
+      <span class="nav-icon">🏠</span>
+      <span>হোম</span>
+    </button>
+
+    <button id="nav-routine" class="nav-btn" onclick="showPage('routine', true)">
       <span class="nav-icon">📅</span>
       <span>রুটিন</span>
     </button>
@@ -685,11 +814,11 @@
     }
 
     // ---------- PAGES (নিচের মেনু) ----------
-    const PAGES = ["routine", "study", "target"];
+    const PAGES = ["home", "routine", "study", "target"];
 
     // কোন পাতা দেখাবে তা ঠিক করা; বাকি পাতার অংশ লুকিয়ে যাবে
     function showPage(name, scrollTop) {
-      if (!PAGES.includes(name)) name = "routine";
+      if (!PAGES.includes(name)) name = "home";
 
       document.querySelectorAll("[data-page]").forEach(element => {
         element.classList.toggle("hidden", element.dataset.page !== name);
@@ -702,6 +831,9 @@
         );
       });
 
+      // হোমে আসলে সবচেয়ে নতুন তথ্য দেখানো
+      if (name === "home") renderHome();
+
       // কোন পাতায় ছিলাম তা মনে রাখা
       try {
         localStorage.setItem(PAGE_KEY, JSON.stringify(name));
@@ -710,9 +842,162 @@
       if (scrollTop) window.scrollTo(0, 0);
     }
 
-    // পেজ খুললে শেষবার যে পাতায় ছিলে, সেটা খোলা
+    // পেজ খুললে শেষবার যে পাতায় ছিলে, সেটা খোলা (প্রথমবার হোম)
     function loadPage() {
-      showPage(readStorage(PAGE_KEY, "routine"), false);
+      showPage(readStorage(PAGE_KEY, "home"), false);
+    }
+
+    // ---------- HOME ----------
+    // পরপর কত দিন অন্তত একটি সেভ করা session আছে (আজ বাকি থাকলে গতকাল থেকে গোনা)
+    function calcStreak() {
+      const studied = new Set(
+        sessions
+          .filter(session => session.date && (Number(session.seconds) || 0) > 0)
+          .map(session => session.date)
+      );
+
+      const now = new Date();
+      const day = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+      if (!studied.has(dateToKey(day))) {
+        day.setDate(day.getDate() - 1);
+      }
+
+      let count = 0;
+
+      while (studied.has(dateToKey(day))) {
+        count++;
+        day.setDate(day.getDate() - 1);
+      }
+
+      return count;
+    }
+
+    function greetingText() {
+      const hour = new Date().getHours();
+
+      if (hour < 5) return "শুভ রাত্রি";
+      if (hour < 12) return "শুভ সকাল";
+      if (hour < 15) return "শুভ দুপুর";
+      if (hour < 18) return "শুভ বিকেল";
+      if (hour < 20) return "শুভ সন্ধ্যা";
+      return "শুভ রাত্রি";
+    }
+
+    function renderHome() {
+      const today = todayKey();
+
+      document.getElementById("homeGreeting").textContent =
+        greetingText() + "! 👋";
+
+      let dateText = today;
+
+      try {
+        dateText = new Date().toLocaleDateString("bn-BD", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        });
+      } catch (error) {}
+
+      document.getElementById("homeDate").textContent = "আজ, " + dateText;
+
+      // রুটিনের অগ্রগতি
+      const total = routines.length;
+
+      const done = routines.filter(
+        item => item.doneDate === today
+      ).length;
+
+      const percent = total > 0 ? Math.round((done / total) * 100) : 0;
+
+      document.getElementById("homeRing").style.background =
+        "conic-gradient(var(--blue) " + percent + "%, #dbeafe 0)";
+
+      document.getElementById("homeRingText").textContent =
+        toBn(percent) + "%";
+
+      let message;
+
+      if (total === 0) {
+        message = "রুটিনে কাজ যোগ করলে অগ্রগতি এখানে দেখা যাবে।";
+      } else if (percent === 100) {
+        message = "আজকের সব কাজ শেষ! দারুণ! 🎉";
+      } else if (percent >= 50) {
+        message = "ভালোই এগোচ্ছ, চালিয়ে যাও!";
+      } else {
+        message = "শুরু করো, ছোট ছোট ধাপেই বড় অগ্রগতি।";
+      }
+
+      document.getElementById("homeMessage").textContent = message;
+
+      // আজকের পড়াশোনা
+      const todaySessions = sessions.filter(
+        session =>
+          session.date === today && (Number(session.seconds) || 0) > 0
+      );
+
+      const totalSeconds = todaySessions.reduce(
+        (sum, session) => sum + (Number(session.seconds) || 0),
+        0
+      );
+
+      const subjectsStudied = new Set(
+        todaySessions.map(session => session.subject)
+      );
+
+      document.getElementById("homeTime").textContent =
+        formatTime(totalSeconds);
+
+      document.getElementById("homeDone").textContent =
+        toBn(done) + " / " + toBn(total);
+
+      document.getElementById("homeSubjects").textContent =
+        toBn(subjectsStudied.size);
+
+      document.getElementById("homeStreak").textContent =
+        toBn(calcStreak()) + " দিন";
+
+      // আজকের রুটিনের ছোট তালিকা (সর্বোচ্চ ৫টি)
+      const list = document.getElementById("homeRoutineList");
+      list.replaceChildren();
+
+      document.getElementById("homeRoutineEmpty").classList.toggle(
+        "hidden",
+        total > 0
+      );
+
+      const sorted = [...routines].sort((a, b) =>
+        (a.time || "99:99").localeCompare(b.time || "99:99")
+      );
+
+      sorted.slice(0, 5).forEach(item => {
+        const isDone = item.doneDate === today;
+
+        const row = document.createElement("div");
+        row.className = "home-item" + (isDone ? " done" : "");
+
+        const icon = document.createElement("span");
+        icon.className = "home-item-icon";
+        icon.textContent = isDone ? "✅" : "⬜";
+
+        const text = document.createElement("span");
+        text.className = "home-item-text";
+        text.textContent =
+          (item.time ? item.time + " — " : "") + item.name;
+
+        row.append(icon, text);
+        list.appendChild(row);
+      });
+
+      if (sorted.length > 5) {
+        const more = document.createElement("p");
+        more.className = "small";
+        more.textContent =
+          "আরও " + toBn(sorted.length - 5) + "টি রুটিন আছে।";
+        list.appendChild(more);
+      }
     }
 
     // ---------- ROUTINES ----------
@@ -870,6 +1155,7 @@
       });
 
       renderRoutineProgress();
+      renderHome();
     }
 
     function renderRoutineProgress() {
@@ -1517,6 +1803,8 @@
         row.appendChild(details);
         list.appendChild(row);
       });
+
+      renderHome();
     }
 
     function clearSessions() {
