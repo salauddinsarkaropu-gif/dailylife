@@ -23,6 +23,7 @@
 
     body {
       margin: 0;
+      padding-bottom: 80px;
       background: var(--bg);
       color: var(--text);
       font-family: Arial, "Noto Sans Bengali", sans-serif;
@@ -343,6 +344,45 @@
     }
     /* ---- নতুন বিষয় যোগ করার ফর্ম শেষ ---- */
 
+    /* ---- নিচের মেনু বার (নতুন) ---- */
+    .bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 20;
+      display: flex;
+      background: white;
+      border-top: 1px solid var(--border);
+      box-shadow: 0 -3px 12px #17203314;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .nav-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 0;
+      padding: 8px 4px;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .nav-btn .nav-icon {
+      font-size: 20px;
+    }
+
+    .nav-btn.active {
+      background: var(--light);
+      color: var(--blue);
+      font-weight: 700;
+    }
+    /* ---- নিচের মেনু বার শেষ ---- */
+
     .delete-btn {
       background: #fee2e2;
       color: #991b1b;
@@ -434,7 +474,7 @@
   </header>
 
   <main>
-    <section class="card">
+    <section class="card" data-page="routine">
       <h2>📅 My Daily Routine</h2>
       <p class="small">প্রতিদিনের কাজের সময় ও নাম লিখে রুটিন তৈরি করো।</p>
 
@@ -471,7 +511,7 @@
       </div>
     </section>
 
-    <section class="card">
+    <section class="card" data-page="study">
       <h2>📚 Study Timer</h2>
 
       <label for="classGroup">তোমার বিভাগ</label>
@@ -508,7 +548,7 @@
       </div>
     </section>
 
-    <section class="card">
+    <section class="card" data-page="study">
       <h2>📊 আজকের পড়াশোনা</h2>
 
       <div class="stats">
@@ -552,7 +592,7 @@
       </div>
     </section>
 
-    <section class="card">
+    <section class="card" data-page="target">
       <h2>🎯 বিষয়ের লক্ষ্য</h2>
       <p class="small">
         প্রতিটি বিষয়ের জন্য কত ঘণ্টা পড়তে চাও, ঠিক করে দাও। এখন পর্যন্ত মোট কত পড়েছ, তা এখানে দেখা যাবে। নিজের বিষয় যোগ করতে একদম নিচের ঘরে লেখো।
@@ -580,6 +620,23 @@
     DailyLife © <span id="year"></span> · তোমার প্রতিদিনের ছোট ছোট অগ্রগতি গুরুত্বপূর্ণ 💙
   </footer>
 
+  <nav class="bottom-nav" aria-label="মূল মেনু">
+    <button id="nav-routine" class="nav-btn active" onclick="showPage('routine', true)">
+      <span class="nav-icon">📅</span>
+      <span>রুটিন</span>
+    </button>
+
+    <button id="nav-study" class="nav-btn" onclick="showPage('study', true)">
+      <span class="nav-icon">📚</span>
+      <span>পড়াশোনা</span>
+    </button>
+
+    <button id="nav-target" class="nav-btn" onclick="showPage('target', true)">
+      <span class="nav-icon">🎯</span>
+      <span>লক্ষ্য</span>
+    </button>
+  </nav>
+
   <script>
     "use strict";
 
@@ -590,6 +647,7 @@
     const SELECTION_KEY = "dailyLifeSelection";
     const TARGET_KEY = "dailyLifeTargets";
     const CUSTOM_SUBJECT_KEY = "dailyLifeCustomSubjects";
+    const PAGE_KEY = "dailyLifePage";
 
     function readStorage(key, fallback) {
       try {
@@ -624,6 +682,37 @@
     function toBn(number) {
       const digits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
       return String(number).replace(/\d/g, d => digits[d]);
+    }
+
+    // ---------- PAGES (নিচের মেনু) ----------
+    const PAGES = ["routine", "study", "target"];
+
+    // কোন পাতা দেখাবে তা ঠিক করা; বাকি পাতার অংশ লুকিয়ে যাবে
+    function showPage(name, scrollTop) {
+      if (!PAGES.includes(name)) name = "routine";
+
+      document.querySelectorAll("[data-page]").forEach(element => {
+        element.classList.toggle("hidden", element.dataset.page !== name);
+      });
+
+      PAGES.forEach(page => {
+        document.getElementById("nav-" + page).classList.toggle(
+          "active",
+          page === name
+        );
+      });
+
+      // কোন পাতায় ছিলাম তা মনে রাখা
+      try {
+        localStorage.setItem(PAGE_KEY, JSON.stringify(name));
+      } catch (error) {}
+
+      if (scrollTop) window.scrollTo(0, 0);
+    }
+
+    // পেজ খুললে শেষবার যে পাতায় ছিলে, সেটা খোলা
+    function loadPage() {
+      showPage(readStorage(PAGE_KEY, "routine"), false);
     }
 
     // ---------- ROUTINES ----------
@@ -1596,6 +1685,7 @@
       renderTargets();
       updateTimerUI();
       updateRoutineFormUI();
+      loadPage();
 
       window.setInterval(() => {
         if (activeStudy && activeStudy.running) {
