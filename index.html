@@ -48,7 +48,7 @@
       color-scheme: light;
     }
 
-    /* ---- Dark Mode রং (নতুন) ---- */
+    /* ---- Dark Mode রং ---- */
     :root[data-theme="dark"] {
       --blue: #2563eb;
       --accent: #60a5fa;
@@ -475,7 +475,7 @@
     }
     /* ---- হোম পাতা শেষ ---- */
 
-    /* ---- সেটিংস পাতা ও সুইচ (নতুন) ---- */
+    /* ---- সেটিংস পাতা ও সুইচ ---- */
     .setting-row {
       display: flex;
       align-items: center;
@@ -518,6 +518,15 @@
       transform: translateX(24px);
     }
     /* ---- সেটিংস পাতা ও সুইচ শেষ ---- */
+
+    /* ---- প্রোফাইল (নতুন) ---- */
+    #profileStatus {
+      min-height: 22px;
+      margin: 8px 0 0;
+      color: var(--dark-blue);
+      font-weight: 600;
+    }
+    /* ---- প্রোফাইল শেষ ---- */
 
     /* ---- নিচের মেনু বার / বাঁ দিকের sidebar (নেভি) ---- */
     .bottom-nav {
@@ -914,6 +923,26 @@
     </section>
 
     <section class="card" data-page="settings">
+      <h2>👤 প্রোফাইল</h2>
+      <p class="small">তোমার তথ্য শুধু এই ফোনের ব্রাউজারে সেভ থাকে।</p>
+
+      <label for="profileName">নাম</label>
+      <input id="profileName" maxlength="40" placeholder="যেমন: রাহিম">
+
+      <label for="profileLevel">শ্রেণি বা শিক্ষাস্তর</label>
+      <input id="profileLevel" maxlength="40" placeholder="যেমন: HSC ১ম বর্ষ">
+
+      <label for="profileSchool">প্রতিষ্ঠান (ঐচ্ছিক)</label>
+      <input id="profileSchool" maxlength="60" placeholder="যেমন: কলেজের নাম">
+
+      <div class="button-row">
+        <button onclick="saveProfile()">💾 প্রোফাইল সেভ করো</button>
+      </div>
+
+      <p id="profileStatus" class="center"></p>
+    </section>
+
+    <section class="card" data-page="settings">
       <h2>⚙️ সেটিংস</h2>
 
       <div class="setting-row">
@@ -988,6 +1017,7 @@
     const CUSTOM_SUBJECT_KEY = "dailyLifeCustomSubjects";
     const PAGE_KEY = "dailyLifePage";
     const THEME_KEY = "dailyLifeTheme";
+    const PROFILE_KEY = "dailyLifeProfile";
 
     function readStorage(key, fallback) {
       try {
@@ -1011,6 +1041,12 @@
     let activeStudy = readStorage(ACTIVE_KEY, null);
     let targets = readStorage(TARGET_KEY, {});
     let customSubjects = readStorage(CUSTOM_SUBJECT_KEY, {});
+    let profile = readStorage(PROFILE_KEY, { name: "", level: "", school: "" });
+
+    // সেভ করা প্রোফাইল ঠিকঠাক না থাকলে খালি প্রোফাইল ধরা
+    if (!profile || typeof profile !== "object") {
+      profile = { name: "", level: "", school: "" };
+    }
 
     // কোন রুটিন এখন edit হচ্ছে (না হলে null)
     let editingId = null;
@@ -1022,6 +1058,11 @@
     function toBn(number) {
       const digits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
       return String(number).replace(/\d/g, d => digits[d]);
+    }
+
+    // বাড়তি ফাঁকা জায়গা সরিয়ে লেখা পরিষ্কার করা
+    function cleanText(text) {
+      return String(text).replace(/\s+/g, " ").trim();
     }
 
     // ---------- THEME (Dark Mode) ----------
@@ -1060,6 +1101,47 @@
 
     function loadTheme() {
       applyTheme(readStorage(THEME_KEY, "light"));
+    }
+
+    // ---------- PROFILE ----------
+    // সেভ করা প্রোফাইলের তথ্য ঘরগুলোতে বসানো
+    function loadProfileForm() {
+      document.getElementById("profileName").value = profile.name || "";
+      document.getElementById("profileLevel").value = profile.level || "";
+      document.getElementById("profileSchool").value = profile.school || "";
+    }
+
+    let profileStatusTimer = null;
+
+    function saveProfile() {
+      profile = {
+        name: cleanText(
+          document.getElementById("profileName").value
+        ).slice(0, 40),
+
+        level: cleanText(
+          document.getElementById("profileLevel").value
+        ).slice(0, 40),
+
+        school: cleanText(
+          document.getElementById("profileSchool").value
+        ).slice(0, 60)
+      };
+
+      saveStorage(PROFILE_KEY, profile);
+
+      // বাড়তি ফাঁকা জায়গা বাদ দিয়ে পরিষ্কার তথ্য আবার দেখানো
+      loadProfileForm();
+      renderHome();
+
+      const status = document.getElementById("profileStatus");
+      status.textContent = "✅ প্রোফাইল সেভ হয়েছে।";
+
+      clearTimeout(profileStatusTimer);
+
+      profileStatusTimer = setTimeout(() => {
+        status.textContent = "";
+      }, 3000);
     }
 
     // ---------- PAGES (নিচের মেনু) ----------
@@ -1136,8 +1218,11 @@
     function renderHome() {
       const today = todayKey();
 
+      // নাম থাকলে শুভেচ্ছার সঙ্গে নাম
+      const nameText = profile.name ? ", " + profile.name : "";
+
       document.getElementById("homeGreeting").textContent =
-        greetingText() + "! 👋";
+        greetingText() + nameText + "! 👋";
 
       let dateText = today;
 
@@ -1150,7 +1235,8 @@
         });
       } catch (error) {}
 
-      document.getElementById("homeDate").textContent = "আজ, " + dateText;
+      document.getElementById("homeDate").textContent =
+        "আজ, " + dateText + (profile.level ? " · " + profile.level : "");
 
       // রুটিনের অগ্রগতি
       const total = routines.length;
@@ -1493,7 +1579,7 @@
 
     // নামের বাড়তি ফাঁকা জায়গা সরিয়ে পরিষ্কার করা
     function cleanSubjectName(text) {
-      return String(text).replace(/\s+/g, " ").trim();
+      return cleanText(text);
     }
 
     // একই নাম অন্য কোনো বিভাগেও আছে কি না
@@ -2217,6 +2303,7 @@
         new Date().getFullYear();
 
       loadTheme();
+      loadProfileForm();
       renderRoutines();
       loadSelection();
       renderSummary();
