@@ -475,6 +475,69 @@
     }
     /* ---- হোম পাতা শেষ ---- */
 
+    /* ---- অগ্রগতি পাতা ও chart (নতুন) ---- */
+    .stats-sm .stat strong {
+      font-size: 20px;
+    }
+
+    .chart {
+      display: flex;
+      gap: 6px;
+      margin-top: 14px;
+    }
+
+    .bar-col {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .bar-value {
+      min-height: 30px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      text-align: center;
+      font-size: 10px;
+      line-height: 1.15;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .bar-area {
+      width: 100%;
+      height: 120px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      border-radius: 8px;
+      background: var(--light);
+    }
+
+    .bar-fill {
+      width: 70%;
+      border-radius: 6px 6px 0 0;
+      background: var(--blue);
+    }
+
+    .bar-label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .bar-col.today .bar-fill {
+      background: var(--green);
+    }
+
+    .bar-col.today .bar-label {
+      font-weight: 700;
+      color: var(--text);
+    }
+    /* ---- অগ্রগতি পাতা ও chart শেষ ---- */
+
     /* ---- সেটিংস পাতা ও সুইচ ---- */
     .setting-row {
       display: flex;
@@ -553,9 +616,9 @@
       bottom: 0;
       z-index: 20;
       display: flex;
-      gap: 4px;
+      gap: 2px;
       background: var(--navy);
-      padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+      padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
       box-shadow: 0 -4px 16px #0f1b3d40;
     }
 
@@ -566,6 +629,7 @@
 
     .nav-btn {
       flex: 1;
+      min-width: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -573,8 +637,8 @@
       background: transparent;
       color: var(--navy-text);
       border-radius: 12px;
-      padding: 8px 4px;
-      font-size: 12px;
+      padding: 8px 2px;
+      font-size: 11px;
       line-height: 1.3;
     }
 
@@ -924,6 +988,51 @@
       </div>
     </section>
 
+    <section class="card" data-page="progress">
+      <h2 data-i18n="progTitle">📈 অগ্রগতি</h2>
+      <p class="small" data-i18n="progHint">
+        গত ৭ দিনের হিসাব। সব তথ্য তোমার সেভ করা session ও রুটিন থেকে আসে।
+      </p>
+
+      <div class="stats stats-sm">
+        <div class="stat">
+          <strong id="progTotal">০</strong>
+          <span data-i18n="progLblTotal">গত ৭ দিনে মোট</span>
+        </div>
+
+        <div class="stat">
+          <strong id="progAvg">০</strong>
+          <span data-i18n="progLblAvg">দৈনিক গড়</span>
+        </div>
+
+        <div class="stat">
+          <strong id="progBest">–</strong>
+          <span id="progBestLabel">সেরা দিন</span>
+        </div>
+
+        <div class="stat">
+          <strong id="progDays">০ / ৭</strong>
+          <span data-i18n="progLblDays">পড়ার দিন</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" data-page="progress">
+      <h2 data-i18n="progStudyTitle">⏱ পড়ার সময় (গত ৭ দিন)</h2>
+      <div id="studyChart" class="chart"></div>
+      <p class="small" data-i18n="progStudyNote">
+        সবুজ স্তম্ভ আজকের দিন। চলমান timer Stop & Save করলে যোগ হবে।
+      </p>
+    </section>
+
+    <section class="card" data-page="progress">
+      <h2 data-i18n="progRoutineTitle">✅ রুটিন সম্পন্ন (গত ৭ দিন)</h2>
+      <div id="routineChart" class="chart"></div>
+      <p class="small" data-i18n="progRoutineNote">
+        রুটিনের হিসাব এই আপডেট থেকে জমা হচ্ছে। যে দিনের হিসাব নেই, সেখানে "–" দেখাবে।
+      </p>
+    </section>
+
     <section class="card" data-page="target">
       <h2 data-i18n="targetTitle">🎯 বিষয়ের লক্ষ্য</h2>
       <p class="small" data-i18n="targetHint">
@@ -1053,6 +1162,11 @@
       <span data-i18n="navStudy">পড়াশোনা</span>
     </button>
 
+    <button id="nav-progress" class="nav-btn" onclick="showPage('progress', true)">
+      <span class="nav-icon">📈</span>
+      <span data-i18n="navProgress">অগ্রগতি</span>
+    </button>
+
     <button id="nav-target" class="nav-btn" onclick="showPage('target', true)">
       <span class="nav-icon">🎯</span>
       <span data-i18n="navTarget">লক্ষ্য</span>
@@ -1082,6 +1196,7 @@
     const THEME_KEY = "dailyLifeTheme";
     const PROFILE_KEY = "dailyLifeProfile";
     const LANG_KEY = "dailyLifeLang";
+    const ROUTINE_LOG_KEY = "dailyLifeRoutineLog";
 
     function readStorage(key, fallback) {
       try {
@@ -1106,10 +1221,16 @@
     let targets = readStorage(TARGET_KEY, {});
     let customSubjects = readStorage(CUSTOM_SUBJECT_KEY, {});
     let profile = readStorage(PROFILE_KEY, { name: "", level: "", school: "" });
+    let routineLog = readStorage(ROUTINE_LOG_KEY, {});
 
     // সেভ করা প্রোফাইল ঠিকঠাক না থাকলে খালি প্রোফাইল ধরা
     if (!profile || typeof profile !== "object") {
       profile = { name: "", level: "", school: "" };
+    }
+
+    // রুটিনের দৈনিক হিসাবের খাতা ঠিকঠাক না থাকলে খালি খাতা ধরা
+    if (!routineLog || typeof routineLog !== "object" || Array.isArray(routineLog)) {
+      routineLog = {};
     }
 
     // বর্তমান ভাষা: "bn" (বাংলা) বা "en" (English)
@@ -1132,12 +1253,16 @@
         navHome: "হোম",
         navRoutine: "রুটিন",
         navStudy: "পড়াশোনা",
+        navProgress: "অগ্রগতি",
         navTarget: "লক্ষ্য",
         navSettings: "সেটিংস",
         navAria: "মূল মেনু",
         footerText: "তোমার প্রতিদিনের ছোট ছোট অগ্রগতি গুরুত্বপূর্ণ",
         storageError: "ডেটা সেভ করা যায়নি। ব্রাউজারের স্টোরেজ পরীক্ষা করো।",
         cancel: "বাতিল",
+        unitH: " ঘ",
+        unitM: " মি",
+        lessThanMin: "<১ মি",
 
         // হোম
         greetNight: "শুভ রাত্রি",
@@ -1211,6 +1336,18 @@
         clearSessions: "সেশনের ইতিহাস মুছো",
         clearConfirm: "সব Study Session মুছে ফেলতে চাও?",
 
+        // অগ্রগতি
+        progTitle: "📈 অগ্রগতি",
+        progHint: "গত ৭ দিনের হিসাব। সব তথ্য তোমার সেভ করা session ও রুটিন থেকে আসে।",
+        progLblTotal: "গত ৭ দিনে মোট",
+        progLblAvg: "দৈনিক গড়",
+        progLblBest: "সেরা দিন",
+        progLblDays: "পড়ার দিন",
+        progStudyTitle: "⏱ পড়ার সময় (গত ৭ দিন)",
+        progStudyNote: "সবুজ স্তম্ভ আজকের দিন। চলমান timer Stop & Save করলে যোগ হবে।",
+        progRoutineTitle: "✅ রুটিন সম্পন্ন (গত ৭ দিন)",
+        progRoutineNote: "রুটিনের হিসাব এই আপডেট থেকে জমা হচ্ছে। যে দিনের হিসাব নেই, সেখানে \"–\" দেখাবে।",
+
         // লক্ষ্য
         targetTitle: "🎯 বিষয়ের লক্ষ্য",
         targetHint: "প্রতিটি বিষয়ের জন্য কত ঘণ্টা পড়তে চাও, ঠিক করে দাও। এখন পর্যন্ত মোট কত পড়েছ, তা এখানে দেখা যাবে। নিজের বিষয় যোগ করতে একদম নিচের ঘরে লেখো।",
@@ -1263,12 +1400,16 @@
         navHome: "Home",
         navRoutine: "Routine",
         navStudy: "Study",
+        navProgress: "Progress",
         navTarget: "Goals",
         navSettings: "Settings",
         navAria: "Main menu",
         footerText: "Your small steps every day matter",
         storageError: "Could not save data. Please check your browser storage.",
         cancel: "Cancel",
+        unitH: "h",
+        unitM: "m",
+        lessThanMin: "<1m",
 
         // Home
         greetNight: "Good night",
@@ -1341,6 +1482,18 @@
         sessionEmpty: "Today's study will appear here.",
         clearSessions: "Clear session history",
         clearConfirm: "Delete all study sessions?",
+
+        // Progress
+        progTitle: "📈 Progress",
+        progHint: "The last 7 days. All data comes from your saved sessions and routine.",
+        progLblTotal: "Total, last 7 days",
+        progLblAvg: "Daily average",
+        progLblBest: "Best day",
+        progLblDays: "Days studied",
+        progStudyTitle: "⏱ Study time (last 7 days)",
+        progStudyNote: "The green bar is today. A running timer is added after you Stop & Save.",
+        progRoutineTitle: "✅ Routine completed (last 7 days)",
+        progRoutineNote: "Routine history is recorded from this update onward. Days with no record show \"–\".",
 
         // Goals
         targetTitle: "🎯 Subject goals",
@@ -1437,6 +1590,7 @@
       renderRoutines();
       renderSummary();
       renderTargets();
+      renderProgress();
       updateTimerUI();
     }
 
@@ -1460,6 +1614,24 @@
     // বাড়তি ফাঁকা জায়গা সরিয়ে লেখা পরিষ্কার করা
     function cleanText(text) {
       return String(text).replace(/\s+/g, " ").trim();
+    }
+
+    // সেকেন্ডকে ছোট করে লেখা, যেমন "১ ঘ ৫ মি" বা "1h 5m"
+    function formatShort(seconds) {
+      seconds = Math.max(0, Math.floor(seconds));
+
+      if (seconds === 0) return toBn(0);
+      if (seconds < 60) return t("lessThanMin");
+
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+
+      const parts = [];
+
+      if (h > 0) parts.push(toBn(h) + t("unitH"));
+      if (m > 0 || h === 0) parts.push(toBn(m) + t("unitM"));
+
+      return parts.join(" ");
     }
 
     // ---------- THEME (Dark Mode) ----------
@@ -1542,7 +1714,7 @@
     }
 
     // ---------- PAGES (নিচের মেনু) ----------
-    const PAGES = ["home", "routine", "study", "target", "settings"];
+    const PAGES = ["home", "routine", "study", "progress", "target", "settings"];
 
     // কোন পাতা দেখাবে তা ঠিক করা; বাকি পাতার অংশ লুকিয়ে যাবে
     function showPage(name, scrollTop) {
@@ -1559,8 +1731,9 @@
         );
       });
 
-      // হোমে আসলে সবচেয়ে নতুন তথ্য দেখানো
+      // হোম বা অগ্রগতিতে আসলে সবচেয়ে নতুন তথ্য দেখানো
       if (name === "home") renderHome();
+      if (name === "progress") renderProgress();
 
       // কোন পাতায় ছিলাম তা মনে রাখা
       try {
@@ -1739,6 +1912,163 @@
       }
     }
 
+    // ---------- PROGRESS (অগ্রগতি পাতা) ----------
+    // আজকের রুটিনের হিসাব খাতায় লিখে রাখা (বদলালে তবেই সেভ হয়)
+    function recordRoutineLog() {
+      const today = todayKey();
+
+      const done = routines.filter(
+        item => item.doneDate === today
+      ).length;
+
+      const total = routines.length;
+
+      const old = routineLog[today];
+
+      if (old && old.done === done && old.total === total) return;
+
+      routineLog[today] = { done: done, total: total };
+
+      // খাতা বড় হয়ে গেলে সবচেয়ে পুরোনো দিনগুলো বাদ (সর্বোচ্চ ৯০ দিন)
+      const keys = Object.keys(routineLog).sort();
+
+      while (keys.length > 90) {
+        delete routineLog[keys.shift()];
+      }
+
+      saveStorage(ROUTINE_LOG_KEY, routineLog);
+    }
+
+    // স্তম্ভের chart আঁকা
+    function renderBarChart(container, items) {
+      container.replaceChildren();
+
+      items.forEach(item => {
+        const col = document.createElement("div");
+        col.className = "bar-col" + (item.isToday ? " today" : "");
+
+        const value = document.createElement("div");
+        value.className = "bar-value";
+        value.textContent = item.valueText;
+
+        const area = document.createElement("div");
+        area.className = "bar-area";
+
+        const fill = document.createElement("div");
+        fill.className = "bar-fill";
+        fill.style.height = item.percent + "%";
+
+        area.appendChild(fill);
+
+        const label = document.createElement("div");
+        label.className = "bar-label";
+        label.textContent = item.label;
+
+        col.append(value, area, label);
+        container.appendChild(col);
+      });
+    }
+
+    function renderProgress() {
+      const now = new Date();
+
+      const base = new Date(
+        now.getFullYear(), now.getMonth(), now.getDate()
+      );
+
+      const locale = lang === "bn" ? "bn-BD" : "en-US";
+
+      // গত ৭ দিন (পুরোনো থেকে নতুন, শেষে আজ)
+      const days = [];
+
+      for (let i = 6; i >= 0; i--) {
+        const day = new Date(
+          base.getFullYear(), base.getMonth(), base.getDate() - i
+        );
+
+        let label = dateToKey(day).slice(5);
+
+        try {
+          label = day.toLocaleDateString(locale, { weekday: "short" });
+        } catch (error) {}
+
+        days.push({ key: dateToKey(day), label: label, isToday: i === 0 });
+      }
+
+      // প্রতিদিনের মোট পড়ার সময়
+      const byDay = {};
+
+      sessions.forEach(session => {
+        if (!session.date) return;
+
+        byDay[session.date] =
+          (byDay[session.date] || 0) + (Number(session.seconds) || 0);
+      });
+
+      const values = days.map(day => byDay[day.key] || 0);
+      const total = values.reduce((sum, value) => sum + value, 0);
+      const max = Math.max(...values);
+      const studyDays = values.filter(value => value > 0).length;
+
+      document.getElementById("progTotal").textContent = formatShort(total);
+
+      document.getElementById("progAvg").textContent =
+        formatShort(Math.floor(total / 7));
+
+      document.getElementById("progBest").textContent =
+        max > 0 ? formatShort(max) : "–";
+
+      document.getElementById("progBestLabel").textContent =
+        max > 0
+          ? t("progLblBest") + " (" + days[values.indexOf(max)].label + ")"
+          : t("progLblBest");
+
+      document.getElementById("progDays").textContent =
+        toBn(studyDays) + " / " + toBn(7);
+
+      // পড়ার সময়ের chart
+      renderBarChart(
+        document.getElementById("studyChart"),
+        days.map((day, index) => {
+          const value = values[index];
+
+          let percent = max > 0 ? Math.round((value / max) * 100) : 0;
+
+          if (value > 0 && percent < 4) percent = 4;
+
+          return {
+            label: day.label,
+            valueText: formatShort(value),
+            percent: percent,
+            isToday: day.isToday
+          };
+        })
+      );
+
+      // রুটিন সম্পন্নের chart (খাতায় যে দিনের হিসাব আছে, শুধু সেগুলো)
+      renderBarChart(
+        document.getElementById("routineChart"),
+        days.map(day => {
+          const entry = routineLog[day.key];
+          const has = !!entry && Number(entry.total) > 0;
+
+          const percent = has
+            ? Math.min(
+                100,
+                Math.round((Number(entry.done) / Number(entry.total)) * 100)
+              )
+            : 0;
+
+          return {
+            label: day.label,
+            valueText: has ? toBn(percent) + "%" : "–",
+            percent: percent,
+            isToday: day.isToday
+          };
+        })
+      );
+    }
+
     // ---------- ROUTINES ----------
     function updateRoutineFormUI() {
       const saveBtn = document.getElementById("routineSaveBtn");
@@ -1893,8 +2223,10 @@
         list.appendChild(row);
       });
 
+      recordRoutineLog();
       renderRoutineProgress();
       renderHome();
+      renderProgress();
     }
 
     function renderRoutineProgress() {
@@ -2564,6 +2896,7 @@
       });
 
       renderHome();
+      renderProgress();
     }
 
     function clearSessions() {
