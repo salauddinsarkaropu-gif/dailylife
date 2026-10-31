@@ -475,7 +475,7 @@
     }
     /* ---- হোম পাতা শেষ ---- */
 
-    /* ---- অগ্রগতি পাতা ও chart (নতুন) ---- */
+    /* ---- অগ্রগতি পাতা ও chart ---- */
     .stats-sm .stat strong {
       font-size: 20px;
     }
@@ -537,6 +537,30 @@
       color: var(--text);
     }
     /* ---- অগ্রগতি পাতা ও chart শেষ ---- */
+
+    /* ---- সেশনের ইতিহাস (নতুন) ---- */
+    .history-day {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-top: 18px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 700;
+      color: var(--dark-blue);
+    }
+
+    .history-day span:last-child {
+      flex-shrink: 0;
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #historyCount {
+      margin: 0;
+    }
+    /* ---- সেশনের ইতিহাস শেষ ---- */
 
     /* ---- সেটিংস পাতা ও সুইচ ---- */
     .setting-row {
@@ -1033,6 +1057,20 @@
       </p>
     </section>
 
+    <section class="card" data-page="progress">
+      <h2 data-i18n="histTitle">🕘 সেশনের ইতিহাস</h2>
+      <p id="historyCount" class="small"></p>
+
+      <div id="historyList"></div>
+      <p id="historyEmpty" class="small" data-i18n="histEmpty">
+        এখনো কোনো সেশন সেভ হয়নি।
+      </p>
+
+      <div class="button-row">
+        <button id="historyMoreBtn" class="secondary-btn hidden" onclick="showMoreHistory()"></button>
+      </div>
+    </section>
+
     <section class="card" data-page="target">
       <h2 data-i18n="targetTitle">🎯 বিষয়ের লক্ষ্য</h2>
       <p class="small" data-i18n="targetHint">
@@ -1233,6 +1271,11 @@
       routineLog = {};
     }
 
+    // সেভ করা session-এর তালিকা ঠিকঠাক না থাকলে খালি তালিকা ধরা
+    if (!Array.isArray(sessions)) {
+      sessions = [];
+    }
+
     // বর্তমান ভাষা: "bn" (বাংলা) বা "en" (English)
     let lang = readStorage(LANG_KEY, "bn");
 
@@ -1243,6 +1286,9 @@
 
     // বিষয়ভিত্তিক সময়ের কোন ভিউ খোলা: "today", "week" বা "month"
     let periodView = "today";
+
+    // সেশনের ইতিহাসে এখন কয়টি session দেখানো হচ্ছে
+    let historyLimit = 20;
 
     // ---------- LANGUAGE (বাংলা / English) ----------
     // লেখার তালিকা: প্রতিটি চাবির বাংলা ও ইংরেজি রূপ
@@ -1347,6 +1393,18 @@
         progStudyNote: "সবুজ স্তম্ভ আজকের দিন। চলমান timer Stop & Save করলে যোগ হবে।",
         progRoutineTitle: "✅ রুটিন সম্পন্ন (গত ৭ দিন)",
         progRoutineNote: "রুটিনের হিসাব এই আপডেট থেকে জমা হচ্ছে। যে দিনের হিসাব নেই, সেখানে \"–\" দেখাবে।",
+
+        // সেশনের ইতিহাস
+        histTitle: "🕘 সেশনের ইতিহাস",
+        histCount: "মোট {n}টি সেশন সেভ করা আছে।",
+        histEmpty: "এখনো কোনো সেশন সেভ হয়নি।",
+        histToday: "আজ",
+        histYesterday: "গতকাল",
+        histUnknownDate: "তারিখ জানা নেই",
+        histEndedAt: "শেষ হয়েছে {time}",
+        histDelete: "🗑 মুছো",
+        histMore: "আরও দেখাও ({n}টি বাকি)",
+        histDeleteConfirm: "এই সেশনটি মুছে ফেলবে?\n\n{subject} · {time}\n\n• মুছলে এটি আর ফিরবে না\n• হোম, অগ্রগতি ও লক্ষ্যের হিসাব বদলে যাবে",
 
         // লক্ষ্য
         targetTitle: "🎯 বিষয়ের লক্ষ্য",
@@ -1494,6 +1552,18 @@
         progStudyNote: "The green bar is today. A running timer is added after you Stop & Save.",
         progRoutineTitle: "✅ Routine completed (last 7 days)",
         progRoutineNote: "Routine history is recorded from this update onward. Days with no record show \"–\".",
+
+        // Session history
+        histTitle: "🕘 Session history",
+        histCount: "{n} sessions saved in total.",
+        histEmpty: "No session has been saved yet.",
+        histToday: "Today",
+        histYesterday: "Yesterday",
+        histUnknownDate: "Unknown date",
+        histEndedAt: "Ended at {time}",
+        histDelete: "🗑 Delete",
+        histMore: "Show more ({n} left)",
+        histDeleteConfirm: "Delete this session?\n\n{subject} · {time}\n\n• Once deleted, it cannot be brought back\n• Home, Progress and Goals totals will change",
 
         // Goals
         targetTitle: "🎯 Subject goals",
@@ -2067,6 +2137,184 @@
           };
         })
       );
+
+      // সেশনের ইতিহাসও নতুন করে আঁকা
+      renderHistory();
+    }
+
+    // ---------- SESSION HISTORY (সেশনের ইতিহাস) ----------
+    // তারিখের চাবি ("২০২৬-১০-৩১") থেকে দিনের শিরোনাম বানানো
+    function historyDayLabel(dateKey, today, yesterday, locale) {
+      if (!dateKey) return t("histUnknownDate");
+
+      let text = dateKey;
+      const parts = dateKey.split("-");
+
+      if (parts.length === 3) {
+        const day = new Date(
+          Number(parts[0]), Number(parts[1]) - 1, Number(parts[2])
+        );
+
+        try {
+          text = day.toLocaleDateString(locale, {
+            weekday: "short",
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+          });
+        } catch (error) {}
+      }
+
+      if (dateKey === today) return t("histToday") + " · " + text;
+      if (dateKey === yesterday) return t("histYesterday") + " · " + text;
+
+      return text;
+    }
+
+    // একটি session কখন শেষ হয়েছিল, তার সময় (যেমন "১০:৪২ PM")
+    function sessionTimeText(session) {
+      if (!session.endedAt) return "";
+
+      const date = new Date(session.endedAt);
+
+      if (isNaN(date.getTime())) return "";
+
+      try {
+        return date.toLocaleTimeString(
+          lang === "bn" ? "bn-BD" : "en-US",
+          { hour: "2-digit", minute: "2-digit" }
+        );
+      } catch (error) {
+        return "";
+      }
+    }
+
+    function showMoreHistory() {
+      historyLimit += 20;
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const list = document.getElementById("historyList");
+      list.replaceChildren();
+
+      const total = sessions.length;
+
+      document.getElementById("historyEmpty").classList.toggle(
+        "hidden",
+        total > 0
+      );
+
+      document.getElementById("historyCount").textContent =
+        total > 0 ? t("histCount", { n: toBn(total) }) : "";
+
+      // নতুন তারিখ আগে; একই দিনে পরে সেভ করা session আগে
+      const sorted = [...sessions].sort((a, b) =>
+        String(b.date || "").localeCompare(String(a.date || "")) ||
+        (Number(b.id) || 0) - (Number(a.id) || 0)
+      );
+
+      const visible = sorted.slice(0, historyLimit);
+
+      // প্রতিদিনের মোট সময় (সব session ধরে, শুধু দেখানোগুলো নয়)
+      const dayTotals = {};
+
+      sessions.forEach(session => {
+        const key = session.date || "";
+
+        dayTotals[key] =
+          (dayTotals[key] || 0) + (Number(session.seconds) || 0);
+      });
+
+      const locale = lang === "bn" ? "bn-BD" : "en-US";
+      const today = todayKey();
+
+      const yesterdayDate = new Date();
+      yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+      const yesterday = dateToKey(yesterdayDate);
+
+      let lastDate = null;
+
+      visible.forEach(session => {
+        const dateKey = session.date || "";
+
+        // নতুন দিনের শিরোনাম
+        if (dateKey !== lastDate) {
+          lastDate = dateKey;
+
+          const heading = document.createElement("div");
+          heading.className = "history-day";
+
+          const left = document.createElement("span");
+          left.textContent =
+            historyDayLabel(dateKey, today, yesterday, locale);
+
+          const right = document.createElement("span");
+          right.textContent = formatShort(dayTotals[dateKey] || 0);
+
+          heading.append(left, right);
+          list.appendChild(heading);
+        }
+
+        const row = document.createElement("div");
+        row.className = "session-item";
+
+        const details = document.createElement("div");
+
+        const name = document.createElement("strong");
+        name.textContent = subjectLabel(session.subject);
+
+        const info = document.createElement("div");
+        info.className = "small";
+
+        const timeText = sessionTimeText(session);
+
+        info.textContent =
+          formatTime(session.seconds) +
+          (timeText ? " · " + t("histEndedAt", { time: timeText }) : "");
+
+        details.append(name, info);
+
+        const remove = document.createElement("button");
+        remove.className = "delete-btn";
+        remove.textContent = t("histDelete");
+        remove.onclick = () => deleteSession(session.id);
+
+        row.append(details, remove);
+        list.appendChild(row);
+      });
+
+      // "আরও দেখাও" বাটন
+      const moreButton = document.getElementById("historyMoreBtn");
+      const remaining = total - visible.length;
+
+      moreButton.classList.toggle("hidden", remaining <= 0);
+
+      if (remaining > 0) {
+        moreButton.textContent = t("histMore", { n: toBn(remaining) });
+      }
+    }
+
+    // একটি session মুছে ফেলা (আগে জিজ্ঞেস করে)
+    function deleteSession(id) {
+      const index = sessions.findIndex(session => session.id === id);
+
+      if (index === -1) return;
+
+      const session = sessions[index];
+
+      const message = t("histDeleteConfirm", {
+        subject: subjectLabel(session.subject),
+        time: formatTime(session.seconds)
+      });
+
+      if (!confirm(message)) return;
+
+      sessions.splice(index, 1);
+      saveStorage(SESSION_KEY, sessions);
+
+      renderSummary();
+      renderTargets();
     }
 
     // ---------- ROUTINES ----------
